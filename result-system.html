@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Bhagbat Computer Centre - Result System</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:linear-gradient(135deg,#dbeafe,#eff6ff);
+min-height:100vh;
+}
+
+.header{
+background:linear-gradient(90deg,#1d4ed8,#2563eb,#3b82f6);
+color:white;
+text-align:center;
+padding:25px 15px;
+box-shadow:0 8px 20px rgba(0,0,0,.12);
+}
+
+.header h1{
+font-size:34px;
+}
+
+.header p{
+font-size:18px;
+margin-top:6px;
+}
+
+.container{
+max-width:950px;
+margin:auto;
+padding:25px 15px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:22px;
+box-shadow:0 15px 35px rgba(0,0,0,.08);
+}
+
+label{
+display:block;
+margin-top:14px;
+margin-bottom:8px;
+font-weight:bold;
+color:#1e3a8a;
+font-size:18px;
+}
+
+input,select{
+width:100%;
+padding:12px;
+font-size:17px;
+border:2px solid #93c5fd;
+border-radius:12px;
+outline:none;
+display:block;
+}
+
+.row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+.buttons{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:18px;
+}
+
+button{
+padding:12px 18px;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+color:white;
+}
+
+.calc{background:#16a34a;}
+.print{background:#2563eb;}
+.clear{background:#dc2626;}
+.home{background:#475569;}
+
+.result{
+margin-top:20px;
+padding:18px;
+background:#eff6ff;
+border-left:5px solid #2563eb;
+border-radius:10px;
+font-size:18px;
+line-height:1.8;
+color:#111827;
+}
+
+.notice{
+margin-top:18px;
+padding:14px;
+background:#eff6ff;
+border-left:5px solid #2563eb;
+border-radius:10px;
+line-height:1.7;
+color:#1e3a8a;
+}
+
+.footer{
+text-align:center;
+padding:20px;
+color:#555;
+}
+
+@media(max-width:768px){
+
+.row{
+grid-template-columns:1fr;
+}
+
+button{
+width:100%;
+}
+
+.header h1{
+font-size:26px;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- PREMIUM UNIVERSAL MENU START -->
+
+<style>
+.premium-menu{
+position:sticky;
+top:0;
+z-index:99999;
+background:linear-gradient(90deg,#0f172a,#1e3a8a,#2563eb);
+padding:10px;
+text-align:center;
+box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+
+.premium-menu a{
+color:white;
+text-decoration:none;
+display:inline-block;
+padding:10px 14px;
+margin:3px;
+font-size:15px;
+font-weight:bold;
+border-radius:8px;
+transition:.3s;
+}
+
+.premium-menu a:hover{
+background:gold;
+color:black;
+}
+
+@media(max-width:768px){
+.premium-menu a{
+display:block;
+margin:5px 0;
+}
+}
+</style>
+
+<div class="premium-menu">
+<a href="index.html">Home</a>
+<a href="notes-system.html">Notes</a>
+<a href="exam-system.html">Exam</a>
+<a href="result-system.html">Result</a>
+<a href="certificate-system.html">Certificate</a>
+<a href="notice.html">Notice</a>
+<a href="admission.html">Admission</a>
+</div>
+
+<!-- PREMIUM UNIVERSAL MENU END -->
+
+<div class="header">
+<h1>Bhagbat Computer Centre</h1>
+<p>Premium Result Sheet System</p>
+</div>
+
+<div class="container">
+<div class="card">
+
+<div class="row">
+
+<div>
+<label>Student Name</label>
+<input type="text" id="name" placeholder="Enter Student Name">
+</div>
+
+<div>
+<label>Roll Number</label>
+<input type="text" id="roll" placeholder="Enter Roll Number">
+</div>
+
+</div>
+
+<label>Select Class</label>
+<select id="cls">
+<option>Class II</option>
+<option>Class III</option>
+<option>Class IV</option>
+<option>Class V</option>
+<option>Class VI</option>
+<option>Class VII</option>
+<option>Class VIII</option>
+<option>Class IX</option>
+<option>Class X</option>
+<option>Class XI</option>
+<option>Class XII</option>
+</select>
+
+<div class="row">
+
+<div>
+<label>Computer Marks</label>
+<input type="number" id="m1" min="0" max="100" placeholder="0 - 100">
+</div>
+
+<div>
+<label>English Marks</label>
+<input type="number" id="m2" min="0" max="100" placeholder="0 - 100">
+</div>
+
+</div>
+
+<div class="row">
+
+<div>
+<label>Math Marks</label>
+<input type="number" id="m3" min="0" max="100" placeholder="0 - 100">
+</div>
+
+<div>
+<label>GK Marks</label>
+<input type="number" id="m4" min="0" max="100" placeholder="0 - 100">
+</div>
+
+</div>
+
+<div class="buttons">
+
+<button class="calc" onclick="calculateResult()">Calculate Result</button>
+
+<button onclick="toggleMode()" style="background:#7c3aed;">Toggle Mode</button>
+
+<button onclick="sendCertificate()" style="background:#ea580c;">Send To Certificate</button>
+
+<button class="print" onclick="printResult()">Print</button>
+
+<button class="clear" onclick="clearAll()">Clear</button>
+
+<button class="home" onclick="goHome()">Home</button>
+
+</div>
+
+<div class="result" id="resultBox">
+Result will appear here...
+</div>
+
+<div class="notice">
+✔ Auto Total + Percentage<br>
+✔ Auto Grade + Pass / Fail<br>
+✔ Printable Result Sheet<br>
+✔ Mobile Friendly Design
+</div>
+
+</div>
+</div>
+
+<div class="footer">
+© Bhagbat Computer Centre | Smart Result Management
+</div>
+
+<script>
+
+let singleMode=false;
+
+window.onload=function(){
+showLoginBox();
+};
+
+function showLoginBox(){
+
+let box=document.createElement("div");
+box.id="loginOverlay";
+
+box.innerHTML=`
+<div style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+">
+
+<div style="
+background:white;
+padding:30px;
+border-radius:16px;
+width:320px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,.2);
+">
+
+<h2 style="margin-bottom:15px;color:#2563eb;">Login</h2>
+
+<div style="position:relative;">
+
+<input
+type="password"
+id="passBox"
+placeholder="Enter Password"
+onkeyup="if(event.key==='Enter'){checkLogin();}"
+style="
+width:100%;
+padding:12px;
+font-size:18px;
+border:2px solid #93c5fd;
+border-radius:10px;
+">
+
+<span onclick="togglePass()"
+style="
+position:absolute;
+right:12px;
+top:10px;
+cursor:pointer;
+font-size:20px;
+">👁</span>
+
+</div>
+
+<button onclick="checkLogin()"
+style="
+margin-top:15px;
+padding:10px 20px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:10px;
+font-size:17px;
+cursor:pointer;
+width:100%;
+">
+Enter
+</button>
+
+</div>
+</div>
+`;
+
+document.body.appendChild(box);
+
+}
+
+function togglePass(){
+
+let x=document.getElementById("passBox");
+
+x.type = x.type==="password" ? "text" : "password";
+
+}
+
+function checkLogin(){
+
+let pass=document.getElementById("passBox").value;
+
+if(pass==="1234"){
+
+document.getElementById("loginOverlay").remove();
+
+}else{
+
+alert("Wrong Password");
+
+}
+
+}
+
+function getNum(id){
+
+return parseInt(document.getElementById(id).value) || 0;
+
+}
+
+function calculateResult(){
+
+let name=document.getElementById("name").value.trim();
+let roll=document.getElementById("roll").value.trim();
+let cls=document.getElementById("cls").value;
+
+let m1=getNum("m1");
+let m2=getNum("m2");
+let m3=getNum("m3");
+let m4=getNum("m4");
+
+if(m1>100 || m2>100 || m3>100 || m4>100){
+
+alert("Marks cannot exceed 100");
+return;
+
+}
+
+let total = singleMode ? m1 : (m1+m2+m3+m4);
+
+let percent = singleMode
+? (total/50*100).toFixed(2)
+: (total/400*100).toFixed(2);
+let result="Pass";
+
+if(singleMode ? m1<17 : (m1<33 || m2<33 || m3<33 || m4<33)){
+result="Fail";
+}
+
+let grade="F";
+
+if(percent>=90) grade="A+";
+else if(percent>=80) grade="A";
+else if(percent>=70) grade="B+";
+else if(percent>=60) grade="B";
+else if(percent>=50) grade="C";
+else if(percent>=33) grade="D";
+else grade="F";
+
+if(result==="Fail"){
+grade="F";
+}
+
+document.getElementById("resultBox").innerHTML=`
+<b>Student Name:</b> ${name || "-"}<br>
+<b>Roll Number:</b> ${roll || "-"}<br>
+<b>Class:</b> ${cls}<br>
+<hr>
+
+Computer: ${m1}<br>
+English: ${m2}<br>
+Math: ${m3}<br>
+GK: ${m4}<br>
+
+<hr>
+
+<b>Total:</b> ${total} / 400<br>
+<b>Percentage:</b> ${percent}%<br>
+<b>Grade:</b> ${grade}<br>
+<b>Result:</b> ${result}
+`;
+
+}
+
+function printResult(){
+
+let data=document.getElementById("resultBox").innerHTML;
+
+let win=window.open("","","width=900,height=700");
+
+win.document.write(`
+<html>
+<head>
+<title>Print Result</title>
+<style>
+body{
+font-family:Arial;
+padding:30px;
+line-height:1.8;
+}
+h1,h2{
+text-align:center;
+margin:4px;
+}
+.box{
+border:2px solid #000;
+padding:20px;
+margin-top:20px;
+font-size:18px;
+}
+</style>
+</head>
+
+<body>
+
+
+
+<h1>Bhagbat Computer Centre</h1>
+<h2>Student Result Sheet</h2>
+
+<div class="box">
+${data}
+</div>
+
+</body>
+</html>
+`);
+
+win.document.close();
+
+win.onload=function(){
+win.print();
+};
+
+}
+
+function clearAll(){
+
+document.getElementById("name").value="";
+document.getElementById("roll").value="";
+document.getElementById("m1").value="";
+document.getElementById("m2").value="";
+document.getElementById("m3").value="";
+document.getElementById("m4").value="";
+
+document.getElementById("resultBox").innerHTML="Result will appear here...";
+
+}
+
+function goHome(){
+
+window.location.href="index.html";
+
+}
+
+function toggleMode(){
+
+singleMode=!singleMode;
+
+if(singleMode){
+
+document.getElementById("m2").parentElement.style.display="none";
+document.getElementById("m3").parentElement.style.display="none";
+document.getElementById("m4").parentElement.style.display="none";
+
+document.getElementById("m1").max="50";
+document.getElementById("m1").placeholder="0 - 50";
+
+alert("Computer Only Mode Activated");
+
+}else{
+
+document.getElementById("m2").parentElement.style.display="block";
+document.getElementById("m3").parentElement.style.display="block";
+document.getElementById("m4").parentElement.style.display="block";
+
+document.getElementById("m1").max="100";
+document.getElementById("m1").placeholder="0 - 100";
+
+alert("Full Subject Mode Activated");
+
+}
+
+}
+
+function sendCertificate(){
+
+let nm=document.getElementById("name").value;
+let cls=document.getElementById("cls").value;
+let gradeText="A+";
+
+let box=document.getElementById("resultBox").innerText;
+
+if(box.includes("Grade:")){
+gradeText=box.split("Grade:")[1].split("Result:")[0].trim();
+}
+
+localStorage.setItem("certStudent",nm);
+localStorage.setItem("certCourse",cls + " Computer Course");
+localStorage.setItem("certDuration","3 Months");
+localStorage.setItem("certGrade",gradeText);
+
+let today=new Date();
+localStorage.setItem("certDate",today.toLocaleDateString());
+
+localStorage.setItem("certReg","BCC" + Math.floor(Math.random()*900+100));
+
+window.location.href="certificate-system.html";
+
+}
+
+</script>
+
+</body>
+</html>

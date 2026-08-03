@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Exam - Class III Chapter 1</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#eef4ff;
+color:#222;
+}
+
+header{
+background:linear-gradient(90deg,#0b1c3d,#123c8a);
+color:white;
+text-align:center;
+padding:25px 15px;
+}
+
+header h1{
+font-size:32px;
+margin-bottom:8px;
+}
+
+header p{
+font-size:18px;
+color:#ffd;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:30px 20px;
+}
+
+.timer-box{
+text-align:center;
+margin-bottom:25px;
+}
+
+#timer{
+display:inline-block;
+background:red;
+color:white;
+padding:12px 22px;
+border-radius:10px;
+font-size:28px;
+font-weight:bold;
+}
+
+.box{
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 6px 16px rgba(0,0,0,0.10);
+margin-bottom:20px;
+}
+
+.box h3{
+color:#123c8a;
+margin-bottom:15px;
+}
+
+label{
+display:block;
+margin:10px 0;
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+}
+
+label:hover{
+background:#eef4ff;
+}
+
+input[type="text"]{
+width:100%;
+padding:12px;
+margin-top:8px;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+.center{
+text-align:center;
+margin-top:25px;
+}
+
+button{
+padding:14px 24px;
+background:gold;
+border:none;
+font-weight:bold;
+font-size:16px;
+border-radius:10px;
+cursor:pointer;
+margin:5px;
+}
+
+button:hover{
+background:#123c8a;
+color:white;
+}
+
+#result{
+margin-top:30px;
+}
+
+.back{
+text-align:center;
+margin-top:25px;
+}
+
+.back a{
+text-decoration:none;
+background:#25D366;
+color:white;
+padding:12px 22px;
+border-radius:10px;
+font-weight:bold;
+}
+
+/* Print Result Card in B5 Size */
+@media print{
+
+body{
+background:white;
+}
+
+header,
+.timer-box,
+form,
+.back,
+#printBtn{
+display:none;
+}
+
+#result{
+margin:0;
+padding:0;
+}
+
+#printCard{
+width:176mm;
+height:250mm;
+margin:auto;
+padding:18mm;
+page-break-after:avoid;
+}
+
+@page{
+size:B5 portrait;
+margin:8mm;
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Online Exam</h1>
+<p>Class III - Chapter 1 (10 Marks Test)</p>
+</header>
+
+<div class="container">
+
+<div class="timer-box">
+<div id="timer">10:00</div>
+</div>
+
+<form id="quizForm">
+
+<div class="box">
+<h3>Student Information</h3>
+
+Name:
+<input type="text" id="studentName">
+
+Roll Number:
+<input type="text" id="rollNo">
+</div>
+
+<!-- Questions same as before -->
+
+<div class="box">
+<h3>1. A computer is a _____ machine.</h3>
+<label><input type="radio" name="q1" value="Electronic"> Electronic</label>
+<label><input type="radio" name="q1" value="Wooden"> Wooden</label>
+<label><input type="radio" name="q1" value="Paper"> Paper</label>
+<label><input type="radio" name="q1" value="Stone"> Stone</label>
+</div>
+
+<div class="box">
+<h3>2. IPO means Input, Process, _____</h3>
+<label><input type="radio" name="q2" value="Office"> Office</label>
+<label><input type="radio" name="q2" value="Output"> Output</label>
+<label><input type="radio" name="q2" value="Open"> Open</label>
+<label><input type="radio" name="q2" value="Order"> Order</label>
+</div>
+
+<div class="box">
+<h3>3. Which is hardware?</h3>
+<label><input type="radio" name="q3" value="Paint"> Paint</label>
+<label><input type="radio" name="q3" value="Keyboard"> Keyboard</label>
+<label><input type="radio" name="q3" value="Word"> Word</label>
+<label><input type="radio" name="q3" value="Excel"> Excel</label>
+</div>
+
+<div class="box">
+<h3>4. Which is software?</h3>
+<label><input type="radio" name="q4" value="Mouse"> Mouse</label>
+<label><input type="radio" name="q4" value="MS Word"> MS Word</label>
+<label><input type="radio" name="q4" value="Monitor"> Monitor</label>
+<label><input type="radio" name="q4" value="CPU"> CPU</label>
+</div>
+
+<div class="box">
+<h3>5. Output is shown on _____</h3>
+<label><input type="radio" name="q5" value="Keyboard"> Keyboard</label>
+<label><input type="radio" name="q5" value="Monitor"> Monitor</label>
+<label><input type="radio" name="q5" value="Mouse"> Mouse</label>
+<label><input type="radio" name="q5" value="Printer Cable"> Printer Cable</label>
+</div>
+
+<div class="box">
+<h3>6. Which device is used to type?</h3>
+<label><input type="radio" name="q6" value="Monitor"> Monitor</label>
+<label><input type="radio" name="q6" value="Keyboard"> Keyboard</label>
+<label><input type="radio" name="q6" value="Speaker"> Speaker</label>
+<label><input type="radio" name="q6" value="Scanner"> Scanner</label>
+</div>
+
+<div class="box">
+<h3>7. Which is an input device?</h3>
+<label><input type="radio" name="q7" value="Mouse"> Mouse</label>
+<label><input type="radio" name="q7" value="Printer"> Printer</label>
+<label><input type="radio" name="q7" value="Monitor"> Monitor</label>
+<label><input type="radio" name="q7" value="Speaker"> Speaker</label>
+</div>
+
+<div class="box">
+<h3>8. CPU is called _____</h3>
+<label><input type="radio" name="q8" value="Brain of Computer"> Brain of Computer</label>
+<label><input type="radio" name="q8" value="Hand of Computer"> Hand of Computer</label>
+<label><input type="radio" name="q8" value="Eye of Computer"> Eye of Computer</label>
+<label><input type="radio" name="q8" value="Foot of Computer"> Foot of Computer</label>
+</div>
+
+<div class="box">
+<h3>9. Which one stores files?</h3>
+<label><input type="radio" name="q9" value="Hard Disk"> Hard Disk</label>
+<label><input type="radio" name="q9" value="Mouse"> Mouse</label>
+<label><input type="radio" name="q9" value="Keyboard"> Keyboard</label>
+<label><input type="radio" name="q9" value="Monitor"> Monitor</label>
+</div>
+
+<div class="box">
+<h3>10. Which works very fast?</h3>
+<label><input type="radio" name="q10" value="Computer"> Computer</label>
+<label><input type="radio" name="q10" value="Book"> Book</label>
+<label><input type="radio" name="q10" value="Pen"> Pen</label>
+<label><input type="radio" name="q10" value="Chair"> Chair</label>
+</div>
+
+<div class="center">
+<button type="button" onclick="submitExam()">Submit Exam</button>
+</div>
+
+</form>
+
+<div id="result"></div>
+
+<div class="back">
+<a href="class3.html">Back to Class III</a>
+</div>
+
+</div>
+
+<script>
+let time = 600;
+
+let timer = setInterval(function(){
+
+let minutes = Math.floor(time/60);
+let seconds = time%60;
+
+minutes = minutes < 10 ? "0"+minutes : minutes;
+seconds = seconds < 10 ? "0"+seconds : seconds;
+
+document.getElementById("timer").innerHTML = minutes + ":" + seconds;
+
+time--;
+
+if(time < 0){
+clearInterval(timer);
+submitExam();
+}
+
+},1000);
+
+function submitExam(){
+
+clearInterval(timer);
+
+let score = 0;
+
+if(document.querySelector('input[name="q1"]:checked')?.value=="Electronic") score++;
+if(document.querySelector('input[name="q2"]:checked')?.value=="Output") score++;
+if(document.querySelector('input[name="q3"]:checked')?.value=="Keyboard") score++;
+if(document.querySelector('input[name="q4"]:checked')?.value=="MS Word") score++;
+if(document.querySelector('input[name="q5"]:checked')?.value=="Monitor") score++;
+if(document.querySelector('input[name="q6"]:checked')?.value=="Keyboard") score++;
+if(document.querySelector('input[name="q7"]:checked')?.value=="Mouse") score++;
+if(document.querySelector('input[name="q8"]:checked')?.value=="Brain of Computer") score++;
+if(document.querySelector('input[name="q9"]:checked')?.value=="Hard Disk") score++;
+if(document.querySelector('input[name="q10"]:checked')?.value=="Computer") score++;
+
+let name = document.getElementById("studentName").value;
+let roll = document.getElementById("rollNo").value;
+
+let grade="";
+
+if(score==10){
+grade="A+";
+}else if(score>=8){
+grade="A";
+}else if(score>=6){
+grade="B";
+}else if(score>=4){
+grade="C";
+}else{
+grade="Needs Practice";
+}
+
+document.getElementById("result").innerHTML =
+"<div id='printCard' style='background:linear-gradient(135deg,#dbeafe,#bfdbfe);padding:30px;border-radius:25px;box-shadow:0 10px 22px rgba(0,0,0,0.18);border:4px solid #123c8a;text-align:center;'>" +
+
+"<h1 style='color:#800000;margin-bottom:8px;'>BHAGBAT COMPUTER CENTRE</h1>" +
+"<h2 style='margin-bottom:15px;'>EXAM RESULT CARD</h2>" +
+
+"<hr style='margin:15px 0;border:1px solid #123c8a;'>" +
+
+"<p style='font-size:20px;'><b>Student Name:</b> "+name+"</p>" +
+"<p style='font-size:20px;'><b>Roll Number:</b> "+roll+"</p>" +
+"<p style='font-size:20px;'><b>Class:</b> III</p>" +
+"<p style='font-size:20px;'><b>Subject:</b> Computer</p>" +
+
+"<hr style='margin:15px 0;border:1px solid #123c8a;'>" +
+
+"<p style='font-size:24px;'><b>Marks Obtained:</b> "+score+" / 10</p>" +
+"<p style='font-size:24px;'><b>Grade:</b> "+grade+"</p>" +
+"<p style='font-size:20px;'><b>Status:</b> Successfully Completed</p>" +
+
+"<br><br><br>" +
+
+"<div style='display:flex;justify-content:space-between;'>" +
+"<div>_________________<br>Student Signature</div>" +
+"<div>_________________<br>Authorized Sign</div>" +
+"</div>" +
+
+"</div>" +
+
+"<div class='center' id='printBtn'>" +
+"<button onclick='window.print()'>Print Result</button>" +
+"</div>";
+
+}
+</script>
+
+</body>
+</html>

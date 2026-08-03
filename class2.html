@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class II Study Materials</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial, sans-serif;
+background:#f4f8ff;
+color:#222;
+}
+
+header{
+background:linear-gradient(90deg,#0b1c3d,#123c8a);
+color:white;
+text-align:center;
+padding:25px 15px;
+}
+
+header h1{
+font-size:34px;
+margin-bottom:8px;
+}
+
+header p{
+font-size:18px;
+color:#ffd;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:35px 20px;
+}
+
+.main-title{
+text-align:center;
+font-size:32px;
+color:#123c8a;
+margin-bottom:30px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:25px;
+}
+
+.card{
+background:white;
+border-radius:18px;
+padding:25px;
+box-shadow:0 8px 20px rgba(0,0,0,0.10);
+border-left:6px solid #123c8a;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 12px 24px rgba(0,0,0,0.15);
+}
+
+.card h2{
+font-size:24px;
+color:#123c8a;
+margin-bottom:10px;
+}
+
+.card p{
+font-weight:bold;
+margin-bottom:15px;
+color:#333;
+}
+
+.card ul{
+padding-left:20px;
+margin-bottom:18px;
+}
+
+.card li{
+margin-bottom:8px;
+}
+
+.buttons{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.btn{
+text-decoration:none;
+background:gold;
+color:black;
+padding:10px 16px;
+border-radius:8px;
+font-weight:bold;
+font-size:14px;
+}
+
+.btn:hover{
+background:#123c8a;
+color:white;
+}
+
+.back{
+text-align:center;
+margin-top:35px;
+}
+
+.back a{
+text-decoration:none;
+background:#25D366;
+color:white;
+padding:12px 22px;
+border-radius:10px;
+font-weight:bold;
+}
+
+footer{
+background:#0b1c3d;
+color:white;
+text-align:center;
+padding:18px;
+margin-top:40px;
+}
+
+@media(max-width:768px){
+header h1{
+font-size:26px;
+}
+
+.main-title{
+font-size:26px;
+}
+
+.card{
+padding:20px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<script>
+var pass = prompt("Enter Password for Class II Study Materials:");
+
+if(pass !== "2222"){
+alert("Wrong Password!");
+window.location.href="index.html";
+}
+</script>
+
+<header>
+<h1>Class II Computer Learning</h1>
+<p>Oxford Reboot (CBSE 2026-27)</p>
+</header>
+
+<div class="container">
+
+<h2 class="main-title">Premium Study Dashboard</h2>
+
+<div class="cards">
+
+<div class="card">
+<h2>Chapter 1</h2>
+<p>Computer - An Electronic Machine</p>
+<ul>
+<li>Working of a Computer</li>
+<li>Computers and Humans</li>
+<li>Uses of Computer</li>
+</ul>
+<div class="buttons">
+<a href="notes2-1.html" class="btn">Notes</a>
+<a href="mcq2-1.html" class="btn">MCQ</a>
+<a href="exam2-1.html" class="btn">Test</a>
+</div>
+</div>
+
+<div class="card">
+<h2>Chapter 2</h2>
+<p>Role of Computers</p>
+<ul>
+<li>Schools</li>
+<li>Homes</li>
+<li>Hospitals</li>
+<li>Banks</li>
+</ul>
+<div class="buttons">
+<a href="notes2-2.html" class="btn">Notes</a>
+<a href="mcq2-2.html" class="btn">MCQ</a>
+<a href="exam2-2.html" class="btn">Test</a>
+</div>
+</div>
+
+<div class="card">
+<h2>Chapter 3</h2>
+<p>Input and Output Devices</p>
+<ul>
+<li>Input Devices</li>
+<li>Output Devices</li>
+<li>Storage Devices</li>
+</ul>
+<div class="buttons">
+<a href="notes2-3.html" class="btn">Notes</a>
+<a href="mcq2-3.html" class="btn">MCQ</a>
+<a href="exam2-3.html" class="btn">Test</a>
+</div>
+</div>
+
+<div class="card">
+<h2>Chapter 4</h2>
+<p>Keyboard - Special Keys</p>
+<ul>
+<li>Alphabet Keys</li>
+<li>Number Keys</li>
+<li>Special Keys</li>
+</ul>
+<div class="buttons">
+<a href="notes2-4.html" class="btn">Notes</a>
+<a href="mcq2-4.html" class="btn">MCQ</a>
+<a href="exam2-4.html" class="btn">Test</a>
+</div>
+</div>
+
+<div class="card">
+<h2>Chapter 5</h2>
+<p>Mouse - An Input Device</p>
+<ul>
+<li>Mouse Pointer</li>
+<li>Mouse Actions</li>
+<li>Left & Right Click</li>
+</ul>
+<div class="buttons">
+<a href="notes2-5.html" class="btn">Notes</a>
+<a href="mcq2-5.html" class="btn">MCQ</a>
+<a href="exam2-5.html" class="btn">Test</a>
+</div>
+</div>
+
+<div class="card">
+<h2>Chapter 6</h2>
+<p>Introduction to Paint</p>
+<ul>
+<li>Starting Paint</li>
+<li>Shapes Group</li>
+<li>Saving Drawing</li>
+</ul>
+<div class="buttons">
+<a href="notes2-6.html" class="btn">Notes</a>
+<a href="mcq2-6.html" class="btn">MCQ</a>
+<a href="exam2-6.html" class="btn">Test</a>
+</div>
+</div>
+
+<div class="card">
+<h2>Chapter 7</h2>
+<p>File Management - An Introduction</p>
+<ul>
+<li>Saving Files</li>
+<li>Hard Disk</li>
+<li>Folders</li>
+</ul>
+<div class="buttons">
+<a href="notes2-7.html" class="btn">Notes</a>
+<a href="mcq2-7.html" class="btn">MCQ</a>
+<a href="exam2-7.html" class="btn">Test</a>
+</div>
+</div>
+
+</div>
+
+<div class="back">
+<a href="index.html">⬅ Back to Home</a>
+</div>
+
+</div>
+
+<footer>
+© 2026 Bhagbat Computer Centre | Class II Digital Learning Zone
+</footer>
+
+</body>
+</html>

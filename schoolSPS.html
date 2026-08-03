@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="navbar-content">
+                <div class="logo-section">
+                    <img id="schoolLogo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234CAF50'/%3E%3Ctext x='50' y='60' font-size='40' font-weight='bold' text-anchor='middle' fill='white'%3EEMS%3C/text%3E%3C/svg%3E" alt="School Logo" class="school-logo">
+                    <div class="school-info">
+                        <h1>Exam Management System</h1>
+                        <p>School Administration Portal</p>
+                    </div>
+                </div>
+                <label for="logoInput" class="upload-logo-btn">Upload Logo</label>
+                <input type="file" id="logoInput" accept="image/*" style="display:none;">
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <button class="nav-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+                    <button class="nav-btn" onclick="switchTab('sessions')">📅 Sessions</button>
+                    <button class="nav-btn" onclick="switchTab('classes')">🏫 Classes</button>
+                    <button class="nav-btn" onclick="switchTab('sections')">📑 Sections</button>
+                    <button class="nav-btn" onclick="switchTab('subjects')">📚 Subjects</button>
+                    <button class="nav-btn" onclick="switchTab('students')">👥 Students</button>
+                    <button class="nav-btn" onclick="switchTab('individual-registration')">✍️ Register Student</button>
+                    <button class="nav-btn" onclick="switchTab('bulk-upload')">📤 Bulk Upload</button>
+                    <button class="nav-btn" onclick="switchTab('results')">📝 Results & Marks</button>
+                    <button class="nav-btn" onclick="switchTab('marksheet')">📄 Marksheet</button>
+                </nav>
+            </aside>
+
+            <!-- Tab Content -->
+            <main class="content">
+                <!-- Dashboard Tab -->
+                <div id="dashboard" class="tab-content active">
+                    <div class="card-header">
+                        <h2>Dashboard</h2>
+                        <p>Welcome to the Exam Management System</p>
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-info">
+                                <h3>Total Students</h3>
+                                <p id="totalStudents" class="stat-number">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏫</div>
+                            <div class="stat-info">
+                                <h3>Total Classes</h3>
+                                <p id="totalClasses" class="stat-number">3</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-info">
+                                <h3>Total Sessions</h3>
+                                <p id="totalSessions" class="stat-number">2</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⏰</div>
+                            <div class="stat-info">
+                                <h3>Active Session</h3>
+                                <p id="activeSession" class="stat-number">2024-2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sessions Tab -->
+                <div id="sessions" class="tab-content">
+                    <div class="card-header">
+                        <h2>Manage Sessions</h2>
+                    </div>
+                    <div class="card">
+                        <div class="form-group">
+                            <label for="newSession">Add New Session</label>
+                            <div class="input-group">
+                                <input type="text" id="newSession" placeholder="e.g., 2025-2026" class="form-control">
+                                <button onclick="addSession()" class="btn btn-success">Add Session</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Active Sessions</h3>
+                        <ul id="sessionList" class="list-group"></ul>
+                    </div>
+                </div>
+
+                <!-- Classes Tab -->
+                <div id="classes" class="tab-content">
+                    <div class="card-header">
+                        <h2>Manage Classes</h2>
+                    </div>
+                    <div class="card">
+                        <div class="form-group">
+                            <label for="newClass">Add New Class</label>
+                            <div class="input-group">
+                                <input type="text" id="newClass" placeholder="e.g., Class X" class="form-control">
+                                <button onclick="addClass()" class="btn btn-success">Add Class</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Classes List</h3>
+                        <ul id="classList" class="list-group"></ul>
+                    </div>
+                </div>
+
+                <!-- Sections Tab -->
+                <div id="sections" class="tab-content">
+                    <div class="card-header">
+                        <h2>Manage Sections</h2>
+                    </div>
+                    <div class="card">
+                        <div class="form-group">
+                            <label for="newSection">Add New Section</label>
+                            <div class="input-group">
+                                <input type="text" id="newSection" placeholder="e.g., A" class="form-control">
+                                <button onclick="addSection()" class="btn btn-success">Add Section</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Sections List</h3>
+                        <ul id="sectionList" class="list-group"></ul>
+                    </div>
+                </div>
+
+                <!-- Subjects Tab -->
+                <div id="subjects" class="tab-content">
+                    <div class="card-header">
+                        <h2>Manage Subjects</h2>
+                    </div>
+                    <div class="card">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newSubject">Subject Name</label>
+                                <input type="text" id="newSubject" placeholder="e.g., Mathematics" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="subjectCode">Subject Code</label>
+                                <input type="text" id="subjectCode" placeholder="e.g., 041" class="form-control">
+                            </div>
+                            <div class="form-group" style="align-self: flex-end;">
+                                <button onclick="addSubject()" class="btn btn-success">Add Subject</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Subjects List</h3>
+                        <ul id="subjectList" class="list-group"></ul>
+                    </div>
+                </div>
+
+                <!-- Students Tab -->
+                <div id="students" class="tab-content">
+                    <div class="card-header">
+                        <h2>View Students</h2>
+                    </div>
+                    <div class="card">
+                        <div class="filter-section">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="sessionDropdown">Session</label>
+                                    <select id="sessionDropdown" class="form-control" onchange="loadStudentList()"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="classList">Class</label>
+                                    <select id="classList" class="form-control" onchange="updateSectionList()"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="sectionList">Section</label>
+                                    <select id="sectionList" class="form-control" onchange="loadStudentList()"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="studentSearch">Search</label>
+                                    <input type="text" id="studentSearch" placeholder="Search by name or roll no" class="form-control" onkeyup="filterStudents()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Roll No</th>
+                                        <th>Photo</th>
+                                        <th>Name</th>
+                                        <th>Father Name</th>
+                                        <th>DOB</th>
+                                        <th>Class</th>
+                                        <th>Section</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Individual Registration Tab -->
+                <div id="individual-registration" class="tab-content">
+                    <div class="card-header">
+                        <h2>Register Individual Student</h2>
+                    </div>
+                    <div class="card">
+                        <form id="individualRegistrationForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="regSession">Session</label>
+                                    <select id="regSession" class="form-control" required></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regClass">Class</label>
+                                    <select id="regClass" class="form-control" onchange="updateRegSectionList()" required></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regSection">Section</label>
+                                    <select id="regSection" class="form-control" required></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="rollNo">Roll No</label>
+                                    <input type="number" id="rollNo" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="studentName">Student Name</label>
+                                    <input type="text" id="studentName" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="dob">Date of Birth</label>
+                                    <input type="date" id="dob" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="fatherName">Father's Name</label>
+                                    <input type="text" id="fatherName" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="motherName">Mother's Name</label>
+                                    <input type="text" id="motherName" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contact">Contact No</label>
+                                    <input type="tel" id="contact" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="studentPhoto">Student Photo</label>
+                                    <input type="file" id="studentPhoto" accept="image/*" class="form-control" onchange="previewPhoto()">
+                                </div>
+                            </div>
+
+                            <div class="photo-preview">
+                                <img id="photoPreview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23ecf0f1'/%3E%3Ctext x='75' y='75' font-size='14' text-anchor='middle' dominant-baseline='middle' fill='%2395a5a6'%3ENo Photo%3C/text%3E%3C/svg%3E" alt="Photo Preview">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Register Student</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Bulk Upload Tab -->
+                <div id="bulk-upload" class="tab-content">
+                    <div class="card-header">
+                        <h2>Bulk Upload Students</h2>
+                    </div>
+                    <div class="card">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bulkSession">Session</label>
+                                <select id="bulkSession" class="form-control" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="bulkClass">Class</label>
+                                <select id="bulkClass" class="form-control" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="bulkSection">Section</label>
+                                <select id="bulkSection" class="form-control" required></select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bulkFile">Select CSV File</label>
+                                <input type="file" id="bulkFile" accept=".csv" class="form-control" required>
+                            </div>
+                            <div class="form-group" style="align-self: flex-end;">
+                                <button onclick="downloadTemplate()" class="btn btn-info">Download Template</button>
+                            </div>
+                        </div>
+
+                        <p id="selectedFileName" class="file-info">No file selected</p>
+
+                        <div class="template-info">
+                            <h4>CSV Format:</h4>
+                            <p>Roll No, Student Name, Father Name, Mother Name, DOB (YYYY-MM-DD), Contact</p>
+                            <p style="color: #e74c3c;">⚠️ First row should be headers (will be skipped)</p>
+                        </div>
+
+                        <button onclick="processBulkUpload()" class="btn btn-success">Upload Students</button>
+                    </div>
+                </div>
+
+                <!-- Results & Marks Tab -->
+                <div id="results" class="tab-content">
+                    <div class="card-header">
+                        <h2>Results & Marks Management</h2>
+                    </div>
+                    <div class="card">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="resultSession">Session</label>
+                                <select id="resultSession" class="form-control" onchange="updateResultClassList()" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="resultClass">Class</label>
+                                <select id="resultClass" class="form-control" onchange="updateResultSectionList()" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="resultSection">Section</label>
+                                <select id="resultSection" class="form-control" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="examType">Exam Type</label>
+                                <select id="examType" class="form-control" required>
+                                    <option value="">Select Exam Type</option>
+                                    <option value="unit-test-1">Unit Test 1</option>
+                                    <option value="unit-test-2">Unit Test 2</option>
+                                    <option value="mid-term">Mid Term</option>
+                                    <option value="final-exam">Final Exam</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="align-self: flex-end;">
+                                <button onclick="loadResultsForSection()" class="btn btn-primary">Load Results</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Roll No</th>
+                                        <th>Student Name</th>
+                                        <th>Subject</th>
+                                        <th>Marks Obtained</th>
+                                        <th>Total Marks</th>
+                                        <th>Grade</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="marksTableBody"></tbody>
+                            </table>
+                        </div>
+                        <button onclick="saveMarks()" class="btn btn-success" style="margin-top: 15px;">Save All Marks</button>
+                    </div>
+                </div>
+
+                <!-- Marksheet Tab -->
+                <div id="marksheet" class="tab-content">
+                    <div class="card-header">
+                        <h2>Generate Marksheets</h2>
+                    </div>
+                    <div class="card">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="msSession">Session</label>
+                                <select id="msSession" class="form-control" onchange="updateMSClassList()" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="msClass">Class</label>
+                                <select id="msClass" class="form-control" onchange="updateMSSectionList()" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="msSection">Section</label>
+                                <select id="msSection" class="form-control" onchange="loadStudentsForMarksheet()" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="msExamType">Exam Type</label>
+                                <select id="msExamType" class="form-control" required>
+                                    <option value="">Select Exam Type</option>
+                                    <option value="unit-test-1">Unit Test 1</option>
+                                    <option value="unit-test-2">Unit Test 2</option>
+                                    <option value="mid-term">Mid Term</option>
+                                    <option value="final-exam">Final Exam</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Select Students</h3>
+                        <div style="margin-bottom: 15px;">
+                            <label>
+                                <input type="checkbox" id="selectAllMarksheet" onchange="toggleAllMarksheet()">
+                                <span>Select All</span>
+                            </label>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;"></th>
+                                        <th>Roll No</th>
+                                        <th>Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="marksheetStudentBody"></tbody>
+                            </table>
+                        </div>
+                        <button onclick="generateMarksheet()" class="btn btn-primary">Generate Marksheets</button>
+                        <button onclick="downloadMarksheetPDF()" class="btn btn-secondary" style="margin-left: 10px;">📥 Print/Download PDF</button>
+                    </div>
+
+                    <div id="marksheetPreview" style="display:none; margin-top: 30px;"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bhagbat Computer Centre Exam</title>
+
+<style>
+
+body{
+margin:0;
+padding:15px;
+font-family:Arial;
+background:#eef5ff;
+}
+
+.loginbox,.container{
+max-width:950px;
+margin:auto;
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 0 10px rgba(0,0,0,.15);
+}
+
+.loginbox{
+max-width:450px;
+margin-top:40px;
+}
+
+h1,h2{
+text-align:center;
+color:#003366;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:8px 0;
+font-size:16px;
+border-radius:8px;
+border:1px solid #999;
+box-sizing:border-box;
+}
+
+button{
+width:100%;
+padding:14px;
+font-size:18px;
+border:none;
+border-radius:10px;
+background:green;
+color:white;
+font-weight:bold;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:hover{
+background:darkgreen;
+}
+
+.question{
+background:#fafafa;
+padding:15px;
+margin:12px 0;
+border-left:5px solid #0a58ca;
+border-radius:10px;
+}
+
+.question p{
+font-weight:bold;
+}
+
+label{
+display:block;
+padding:5px;
+cursor:pointer;
+}
+
+#timer{
+font-size:28px;
+font-weight:bold;
+text-align:center;
+color:red;
+margin:15px 0;
+}
+
+#result{
+display:none;
+padding:20px;
+background:#eafbea;
+margin-top:20px;
+border-radius:10px;
+font-size:22px;
+text-align:center;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN AREA -->
+
+<div class="loginbox" id="loginBox">
+
+<h2>Student Exam Portal</h2>
+
+<input type="text" id="studentName" placeholder="Student Name">
+
+<input type="text" id="studentCode" placeholder="Student Code">
+
+<input type="text" id="class" placeholder="Class">
+
+<input type="text" id="subjectName" placeholder="Subject">
+
+<input type="date" id="examDate">
+
+<button onclick="registerStudent()">
+Submit Details
+</button>
+
+<button id="startBtn" disabled onclick="startExam()">
+Exam Not Available
+</button>
+
+<p id="msg" style="color:red;font-weight:bold;"></p>
+
+</div>
+
+<!-- EXAM AREA -->
+
+<div class="container" id="examArea" style="display:none;">
+
+<h1>Bhagbat Computer Centre</h1>
+
+<h2>Online Examination</h2>
+
+<div id="timer">30:00</div>
+
+<form id="quizForm">
+
+<div id="allQuestions">
+
+<!-- QUESTION 1 -->
+
+<div class="question">
+<p>1. Communication means:</p>
+
+<label>
+<input type="radio" name="q1" value="1">
+Exchange of information
+</label>
+
+<label>
+<input type="radio" name="q1" value="0">
+Cooking food
+</label>
+
+<label>
+<input type="radio" name="q1" value="0">
+Sleeping
+</label>
+
+<label>
+<input type="radio" name="q1" value="0">
+Drawing
+</label>
+
+</div>
+
+<!-- QUESTION 2 -->
+
+<div class="question">
+<p>2. Which is verbal communication?</p>
+
+<label>
+<input type="radio" name="q2" value="1">
+Speaking
+</label>
+
+<label>
+<input type="radio" name="q2" value="0">
+Gesture
+</label>
+
+<label>
+<input type="radio" name="q2" value="0">
+Sign
+</label>
+
+<label>
+<input type="radio" name="q2" value="0">
+Smile
+</label>
+
+</div>
+
+<!-- এখান থেকে আপনার বাকি সব Question Paste করুন -->
+
+</div>
+
+<button type="button" onclick="submitExam()">
+
+Submit Exam
+
+</button>
+
+</form>
+
+<div id="result"></div>
+
+</div>
+
+<!-- FIREBASE SDK -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyD2MXL0151Ks1YhGP7ZgsAZ2xxs_W47GrY",
+
+authDomain: "bcc-online-exam.firebaseapp.com",
+
+projectId: "bcc-online-exam",
+
+storageBucket: "bcc-online-exam.firebasestorage.app",
+
+messagingSenderId: "855223296755",
+
+appId: "1:855223296755:web:2e3030b60f5b177298cd86"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+
+</script>
+
+<!-- MAIN SCRIPT -->
+
+<script>
+
+let totalTime = 1800;
+
+let timer = null;
+
+let timerStarted = false;
+
+async function registerStudent(){
+
+let name = document.getElementById("studentName").value.trim();
+
+let code = document.getElementById("studentCode").value.trim();
+
+let subject = document.getElementById("subjectName").value.trim();
+
+let date = document.getElementById("examDate").value;
+
+if(name==="" || code==="" || subject==="" || date===""){
+
+alert("Please Fill All Details");
+
+return;
+
+}
+
+await db.collection("students").doc(code).set({
+
+name:name,
+
+studentCode:code,
+
+subject:subject,
+
+date:date,
+
+approved:false,
+
+time:new Date()
+
+});
+
+document.getElementById("msg").innerHTML =
+"Details Submitted Successfully";
+
+listenForApproval(code,subject);
+
+checkExamAvailability(subject);
+
+}
+
+async function checkExamAvailability(subject){
+
+let code =
+document.getElementById("studentCode").value.trim();
+
+let studentDoc =
+await db.collection("students")
+.doc(code)
+.get();
+
+if(!studentDoc.exists){
+
+alert("Student Not Found");
+
+return;
+
+}
+
+let studentData = studentDoc.data();
+
+if(studentData.approved !== true){
+
+document.getElementById("startBtn").disabled = true;
+
+document.getElementById("startBtn").innerHTML =
+"Waiting For Approval";
+
+return;
+
+}
+
+let exam =
+await db.collection("exams")
+.doc(subject)
+.get();
+
+if(exam.exists){
+
+document.getElementById("startBtn").disabled = false;
+
+document.getElementById("startBtn").innerHTML =
+"Start Exam";
+
+}else{
+
+document.getElementById("startBtn").disabled = true;
+
+document.getElementById("startBtn").innerHTML =
+"Exam Not Uploaded";
+
+}
+
+}
+
+function startExam(){
+
+document.getElementById("loginBox").style.display = "none";
+
+document.getElementById("examArea").style.display = "block";
+
+shuffleQuestions();
+
+shuffleOptions();
+
+attachTimerStart();
+
+}
+
+function startTimer(){
+
+timer = setInterval(function(){
+
+let min = Math.floor(totalTime/60);
+
+let sec = totalTime%60;
+
+document.getElementById("timer").innerHTML =
+
+(min<10?"0":"")+min+":"+
+
+(sec<10?"0":"")+sec;
+
+totalTime--;
+
+if(totalTime<0){
+
+clearInterval(timer);
+
+submitExam();
+
+}
+
+},1000);
+
+}
+
+function attachTimerStart(){
+
+document.querySelectorAll("input[type=radio]")
+.forEach(function(radio){
+
+radio.addEventListener("click",function(){
+
+if(!timerStarted){
+
+timerStarted = true;
+
+startTimer();
+
+}
+
+});
+
+});
+
+}
+
+function shuffleQuestions(){
+
+let container = document.getElementById("allQuestions");
+
+let questions = Array.from(container.children);
+
+questions.sort(()=>Math.random()-0.5);
+
+questions.forEach(q=>container.appendChild(q));
+
+}
+
+function shuffleOptions(){
+
+document.querySelectorAll(".question")
+.forEach(function(question){
+
+let labels = Array.from(question.querySelectorAll("label"));
+
+labels.sort(()=>Math.random()-0.5);
+
+labels.forEach(label=>question.appendChild(label));
+
+});
+
+}
+
+function submitExam(){
+
+if(timer){
+
+clearInterval(timer);
+
+}
+
+let score = 0;
+
+let totalQuestions =
+document.querySelectorAll(".question").length;
+
+for(let i=1;i<=totalQuestions;i++){
+
+let ans =
+document.querySelector('input[name="q'+i+'"]:checked');
+
+if(ans){
+
+score += Number(ans.value);
+
+}
+
+}
+
+let percent = (score/totalQuestions)*100;
+
+let status = percent>=33 ? "PASS" : "FAIL";
+
+document.getElementById("result").style.display = "block";
+
+document.getElementById("result").innerHTML =
+
+"Score : "+score+" / "+totalQuestions+"<br><br>"+
+
+"Percentage : "+percent.toFixed(2)+"%<br><br>"+
+
+"Result : "+status;
+
+window.scrollTo(0,document.body.scrollHeight);
+
+}
+
+function listenForApproval(code,subject){
+
+db.collection("students")
+.doc(code)
+.onSnapshot(async function(doc){
+
+if(!doc.exists) return;
+
+let data = doc.data();
+
+if(data.approved === true){
+
+document.getElementById("msg").innerHTML =
+"Approved. You Can Start Exam";
+
+let exam =
+await db.collection("exams")
+.doc(subject)
+.get();
+
+if(exam.exists){
+
+document.getElementById("startBtn").disabled = false;
+
+document.getElementById("startBtn").innerHTML =
+"Start Exam";
+
+}
+
+}
+
+});
+
+}
+
+</script>
+
+</body>
+</html>

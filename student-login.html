@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student Login</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f7ff;
+padding:40px;
+}
+
+.loginBox{
+max-width:500px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+h2{
+text-align:center;
+color:#123c8a;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin-top:12px;
+font-size:16px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:20px;
+background:#123c8a;
+color:white;
+font-size:18px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0b1c3d;
+}
+
+#status{
+margin-top:20px;
+text-align:center;
+font-weight:bold;
+font-size:18px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="loginBox">
+
+<h2>Student Login</h2>
+
+<input
+type="text"
+id="studentName"
+placeholder="Student Name">
+
+<input
+type="text"
+id="rollNumber"
+placeholder="Roll Number">
+
+<select id="studentClass">
+<option>Class I</option>
+<option>Class II</option>
+<option>Class III</option>
+<option>Class IV</option>
+<option>Class V</option>
+<option>Class VI</option>
+<option>Class VII</option>
+<option>Class VIII</option>
+<option>Class IX</option>
+<option>Class X</option>
+<option>Class XI</option>
+<option>Class XII</option>
+</select>
+
+<select id="subject">
+
+<option>English</option>
+<option>Bengali</option>
+<option>Hindi</option>
+<option>Mathematics</option>
+<option>Science</option>
+<option>Physics</option>
+<option>Chemistry</option>
+<option>Biology</option>
+<option>Social Studies</option>
+<option>Social Science</option>
+<option>History</option>
+<option>Geography</option>
+<option>Civics</option>
+<option>Economics</option>
+<option>Computer Science</option>
+<option>Information Technology(402)</option>
+<option>Information Technology(802)</option>
+
+</select>
+
+<button
+id="mainButton"
+onclick="submitRequest()">
+
+Submit Request
+
+</button>
+
+<div id="status"></div>
+
+<br>
+
+<button
+id="startExamBtn"
+style="
+display:none;
+background:green;
+"
+onclick="startExam()">
+
+Start Exam
+
+</button>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyD2MXL0151Ks1YhGP7ZgsAZ2xxs_W47GrY",
+
+authDomain: "bcc-online-exam.firebaseapp.com",
+
+projectId: "bcc-online-exam",
+
+storageBucket: "bcc-online-exam.firebasestorage.app",
+
+messagingSenderId: "855223296755",
+
+appId: "1:855223296755:web:2e3030b60f5b177298cd86"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+/* SUBMIT REQUEST */
+
+window.submitRequest = async function(){
+
+let name =
+document.getElementById("studentName").value;
+
+let roll =
+document.getElementById("rollNumber").value;
+
+let className =
+document.getElementById("studentClass").value;
+
+let subject =
+document.getElementById("subject").value;
+
+if(name=="" || roll==""){
+
+alert("Fill all fields");
+
+return;
+
+}
+
+try{
+
+await addDoc(collection(db,"studentRequests"),{
+
+name:name,
+roll:roll,
+className:className,
+subject:subject,
+approved:false,
+date:new Date().toLocaleString()
+
+});
+
+document.getElementById("status").innerHTML =
+"Request Submitted Successfully";
+
+checkApproval(roll);
+
+}
+catch(error){
+
+alert(error.message);
+
+console.log(error);
+
+}
+
+}
+
+/* CHECK APPROVAL */
+
+async function checkApproval(roll){
+
+setInterval(async()=>{
+
+const querySnapshot =
+await getDocs(collection(db,"studentRequests"));
+
+querySnapshot.forEach((doc)=>{
+
+let student = doc.data();
+
+if(
+student.roll === roll &&
+student.approved === true
+){
+
+document.getElementById("status").innerHTML =
+"Approved Successfully";
+
+document.getElementById("startExamBtn").style.display =
+"block";
+
+}
+
+});
+
+},5000);
+
+}
+
+/* START EXAM */
+
+window.startExam = function(){
+
+localStorage.setItem(
+"studentName",
+document.getElementById("studentName").value
+);
+
+localStorage.setItem(
+"rollNumber",
+document.getElementById("rollNumber").value
+);
+
+localStorage.setItem(
+"studentClass",
+document.getElementById("studentClass").value
+);
+
+localStorage.setItem(
+"studentSubject",
+document.getElementById("subject").value
+);
+
+window.location.href =
+"exam-system.html";
+
+}
+
+</script>
+
+</body>
+</html>

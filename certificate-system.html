@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Bhagbat Computer Centre - Final Certificate System</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#e5e5e5;
+padding:20px;
+}
+
+.topbar{
+text-align:center;
+margin-bottom:20px;
+}
+
+.topbar h1{
+font-size:34px;
+color:#8b0000;
+margin-bottom:12px;
+}
+
+.topbar button{
+padding:12px 22px;
+font-size:18px;
+font-weight:bold;
+background:#0b57d0;
+color:#fff;
+border:none;
+border-radius:8px;
+cursor:pointer;
+margin:5px;
+}
+
+.panel{
+max-width:1100px;
+margin:auto;
+background:#fff;
+padding:20px;
+border-radius:14px;
+box-shadow:0 10px 25px rgba(0,0,0,.12);
+margin-bottom:20px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+.panel input{
+padding:12px;
+font-size:16px;
+border:2px solid #ddd;
+border-radius:8px;
+width:100%;
+}
+
+.certificate{
+width:1123px;
+height:794px;
+margin:auto;
+position:relative;
+display: block;
+background:url('certificate-bg.png') no-repeat center center;
+background-size:cover;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+overflow:hidden;
+}
+
+#center-address{
+position:absolute;
+top:203px;
+left:0;
+width:100%;
+text-align:center;
+padding-left:1.4in;
+font-size:22px;
+font-weight:bold;
+font-family:Georgia,serif;
+color:#0b2e75;
+letter-spacing:.5px;
+}
+
+#govt-regn{
+position:absolute;
+top:110px;
+right:90px;
+font-size:20px;
+font-weight:bold;
+color:#0b2e75;
+font-family:Georgia,serif;
+letter-spacing:.5px;
+}
+
+/* Dynamic text positions */
+.txt{
+position:absolute;
+width:100%;
+text-align:center;
+left:0;
+color:#111;
+}
+
+#student{
+top:370px;
+font-size:35px;
+font-weight:normal;
+font-family:'Great Vibes', cursive;
+letter-spacing:2px;
+color:#006400;
+text-shadow:1px 1px 1px rgba(0,0,0,.15);
+}
+
+#course{
+top:445px;
+left:100px;
+font-size:30px;
+font-family:Georgia,serif;
+font-style:italic;
+font-weight:bold;
+letter-spacing:1px;
+}
+
+#duration{
+top:570px;
+left:160px;
+width:220px;
+font-size:24px;
+}
+
+#grade{
+top:570px;
+left:340px;
+width:270px;
+font-size:24px;
+}
+
+#date{
+top:570px;
+left:580px;
+width:180px;
+font-size:24px;
+}
+
+#reg{
+top:570px;
+left:760px;
+width:220px;
+font-size:24px;
+}
+@media print{
+
+@page{
+size:A4 landscape;
+margin:0;
+}
+
+html,
+body{
+margin:0 !important;
+padding:0 !important;
+overflow:hidden !important;
+background:#fff !important;
+}
+
+/* Hide Everything First */
+body *{
+visibility:hidden;
+}
+
+/* Show Only Certificate */
+.certificate,
+.certificate *{
+visibility:visible;
+}
+
+/* Hide Menu + Panels */
+.premium-menu,
+.topbar,
+.panel,
+button,
+#loginOverlay{
+display:none !important;
+visibility:hidden !important;
+}
+
+/* Stop Sticky Menu in Print */
+.premium-menu{
+position:static !important;
+height:0 !important;
+overflow:hidden !important;
+}
+
+/* Perfect Certificate Print */
+.certificate{
+position:absolute;
+top:0;
+left:0;
+width:1123px;
+height:794px;
+margin:0 !important;
+padding:0 !important;
+box-shadow:none !important;
+overflow:hidden !important;
+page-break-after:avoid !important;
+break-after:avoid !important;
+background-size:cover !important;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- PREMIUM UNIVERSAL MENU START -->
+
+<style>
+.premium-menu{
+position:sticky;
+top:0;
+z-index:99999;
+background:linear-gradient(90deg,#0f172a,#1e3a8a,#2563eb);
+padding:10px;
+text-align:center;
+box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+
+.premium-menu a{
+color:white;
+text-decoration:none;
+display:inline-block;
+padding:10px 14px;
+margin:3px;
+font-size:15px;
+font-weight:bold;
+border-radius:8px;
+transition:.3s;
+}
+
+.premium-menu a:hover{
+background:gold;
+color:black;
+transform:translateY(-2px);
+}
+
+@media(max-width:768px){
+.premium-menu a{
+display:block;
+margin:5px 0;
+}
+}
+</style>
+
+<div class="premium-menu">
+<a href="index.html">Home</a>
+<a href="notes-system.html">Notes</a>
+<a href="exam-system.html">Exam</a>
+<a href="result-system.html">Result</a>
+<a href="certificate-system.html">Certificate</a>
+<a href="notice.html">Notice</a>
+<a href="admission.html">Admission</a>
+</div>
+
+<!-- PREMIUM UNIVERSAL MENU END -->
+
+<div class="topbar">
+<h1>Bhagbat Computer Centre Certificate System</h1>
+<button onclick="window.print()">Print / Download</button>
+</div>
+
+<div class="panel">
+<input type="text" placeholder="Student Name" oninput="student.innerHTML=this.value">
+<input type="text" placeholder="Course Name" oninput="course.innerHTML=this.value">
+
+<input type="text" placeholder="Duration" oninput="duration.innerHTML=this.value">
+<input type="text" placeholder="Grade" oninput="grade.innerHTML=this.value">
+
+<input type="text" placeholder="Date" oninput="date.innerHTML=this.value">
+<input type="text" placeholder="Registration No." oninput="reg.innerHTML=this.value">
+</div>
+
+<div class="certificate">
+<div id="center-address">
+Kirnahar, Birbhum, West Bengal, Govt. Regn. No. 00000000000
+</div>
+<div class="txt" id="student">Student Name</div>
+<div class="txt" id="course">Course Name</div>
+
+<div class="txt" id="duration">3 Months</div>
+<div class="txt" id="grade">A+</div>
+<div class="txt" id="date">22/04/2026</div>
+<div class="txt" id="reg">BCC001</div>
+
+</div>
+
+<script>
+
+/* ===============================
+   PREMIUM CERTIFICATE V3 SYSTEM
+   Secure Login + Forgot Password
+   Auto Load + Manual Entry Safe
+================================= */
+
+let certPassword = localStorage.getItem("certPass") || "1234";
+let resetAnswer = localStorage.getItem("certAnswer") || "ashoke";
+
+/* Page Load */
+window.onload=function(){
+showLogin();
+autoLoadCertificate();
+};
+
+/* Secure Login Screen */
+function showLogin(){
+
+let box=document.createElement("div");
+box.id="loginOverlay";
+
+box.innerHTML=`
+<div style="
+position:fixed;
+top:0;left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.70);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:99999;">
+
+<div style="
+background:#fff;
+width:340px;
+padding:25px;
+border-radius:14px;
+box-shadow:0 10px 30px rgba(0,0,0,.25);
+text-align:center;">
+
+<h2 style="color:#0b57d0;margin-bottom:15px;">
+Secure Certificate Login
+</h2>
+
+<input type="password"
+id="loginPass"
+placeholder="Enter Password"
+onkeydown="if(event.key==='Enter')checkLogin()"
+style="
+width:100%;
+padding:12px;
+font-size:16px;
+border:2px solid #ddd;
+border-radius:8px;">
+
+<button onclick="checkLogin()"
+style="
+margin-top:15px;
+width:100%;
+padding:12px;
+background:#0b57d0;
+color:#fff;
+border:none;
+border-radius:8px;
+font-size:16px;
+font-weight:bold;">
+Login
+</button>
+
+<button onclick="forgotPassword()"
+style="
+margin-top:10px;
+width:100%;
+padding:10px;
+background:#f59e0b;
+color:#fff;
+border:none;
+border-radius:8px;">
+Forgot Password
+</button>
+
+</div>
+</div>
+`;
+
+document.body.appendChild(box);
+}
+
+/* Login Check */
+function checkLogin(){
+
+let p=document.getElementById("loginPass").value;
+
+if(p===certPassword){
+document.getElementById("loginOverlay").remove();
+}else{
+alert("Wrong Password");
+}
+
+}
+
+/* Forgot Password */
+function forgotPassword(){
+
+let ans=prompt("Security Answer?\n(Your Name)");
+
+if(ans===resetAnswer){
+
+let np=prompt("Enter New Password:");
+
+if(np){
+certPassword=np;
+localStorage.setItem("certPass",np);
+alert("Password Reset Successful");
+}
+
+}else{
+alert("Wrong Security Answer");
+}
+
+}
+
+/* Auto Load Data from Exam / Result */
+function autoLoadCertificate(){
+
+let nm=localStorage.getItem("certStudent");
+let cr=localStorage.getItem("certCourse");
+let du=localStorage.getItem("certDuration");
+let gr=localStorage.getItem("certGrade");
+let dt=localStorage.getItem("certDate");
+let rg=localStorage.getItem("certReg");
+
+if(nm) student.innerHTML=nm;
+if(cr) course.innerHTML=cr;
+if(du) duration.innerHTML=du;
+if(gr) grade.innerHTML=gr;
+if(dt) date.innerHTML=dt;
+if(rg) reg.innerHTML=rg;
+
+}
+
+/* Manual Form Save Optional */
+function saveCertificateData(){
+
+localStorage.setItem("certStudent",student.innerHTML);
+localStorage.setItem("certCourse",course.innerHTML);
+localStorage.setItem("certDuration",duration.innerHTML);
+localStorage.setItem("certGrade",grade.innerHTML);
+localStorage.setItem("certDate",date.innerHTML);
+localStorage.setItem("certReg",reg.innerHTML);
+
+}
+
+</script>
+
+</body>
+</html>

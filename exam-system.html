@@ -1,0 +1,2399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bhagbat Computer Centre - Exam System</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#f4f7ff;
+color:#222;
+line-height:1.6;
+}
+
+/* Header */
+
+header{
+background:linear-gradient(90deg,#0b1c3d,#123c8a);
+color:white;
+padding:15px;
+text-align:center;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+header img{
+width:80px;
+height:80px;
+border-radius:50%;
+border:4px solid gold;
+margin-bottom:10px;
+}
+
+header h1{
+font-size:32px;
+}
+
+header p{
+color:#ffe;
+font-size:16px;
+}
+
+/* Notice */
+
+.notice{
+background:gold;
+color:#000;
+padding:8px;
+font-weight:bold;
+text-align:center;
+}
+
+/* Main Container */
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:30px 20px;
+}
+
+/* Title */
+
+.page-title{
+text-align:center;
+font-size:36px;
+color:#123c8a;
+margin-bottom:25px;
+}
+
+/* Login Box */
+
+.login-box{
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+max-width:700px;
+margin:auto;
+}
+
+.login-box h2{
+text-align:center;
+margin-bottom:20px;
+color:#123c8a;
+}
+
+input,
+select,
+textarea{
+width:100%;
+padding:12px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+}
+
+/* Button */
+
+button{
+width:100%;
+padding:12px;
+background:#123c8a;
+color:white;
+border:none;
+border-radius:8px;
+font-size:18px;
+cursor:pointer;
+font-weight:bold;
+transition:.3s;
+}
+
+button:hover{
+background:#0b1c3d;
+}
+
+/* Footer */
+
+footer{
+margin-top:50px;
+background:#0b1c3d;
+color:white;
+text-align:center;
+padding:18px;
+}
+
+/* Timer */
+
+.timerBox{
+background:#123c8a;
+color:white;
+padding:12px;
+border-radius:10px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+margin-bottom:20px;
+}
+
+/* Question Box */
+
+.questionCard{
+background:#eef4ff;
+padding:25px;
+border-radius:15px;
+min-height:320px;
+}
+
+.questionTitle{
+color:#123c8a;
+margin-bottom:25px;
+line-height:1.8;
+font-size:24px;
+}
+
+/* Options */
+
+.optionBox{
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.option{
+display:flex;
+align-items:center;
+gap:14px;
+background:white;
+padding:16px;
+border-radius:12px;
+border:2px solid #dbeafe;
+cursor:pointer;
+transition:.3s;
+font-size:18px;
+}
+
+.option:hover{
+background:#dbeafe;
+}
+
+.option input{
+transform:scale(1.3);
+margin:0;
+width:auto;
+}
+
+.option span{
+font-weight:bold;
+color:#123c8a;
+min-width:35px;
+}
+
+/* Status */
+
+#statusBox{
+margin-top:20px;
+text-align:center;
+font-size:24px;
+font-weight:bold;
+height:40px;
+}
+
+/* Result */
+
+.resultBox{
+text-align:center;
+line-height:2.2;
+font-size:22px;
+}
+
+.resultBox{
+position:relative;
+z-index:1;
+}
+
+/* =========================
+   PREMIUM CERTIFICATE RESULT
+========================= */
+
+#resultBox{
+width:100%;
+max-width:1050px;
+margin:20px auto;
+padding:40px 45px;
+border:14px solid #8b6f47;
+border-radius:18px;
+
+background:
+linear-gradient(rgba(255,248,235,0.92),
+rgba(248,242,225,0.92)),
+url('https://www.transparenttextures.com/patterns/old-wall.png');
+
+background-size:cover;
+
+position:relative;
+overflow:hidden;
+
+box-shadow:0 0 25px rgba(0,0,0,0.18);
+
+outline:4px double #d4af37;
+outline-offset:-12px;
+
+min-height:auto;
+}
+
+/* Decorative Corners */
+
+#resultBox::before,
+#resultBox::after{
+content:"❖";
+position:absolute;
+font-size:90px;
+color:rgba(139,111,71,0.15);
+font-weight:bold;
+z-index:0;
+}
+
+#resultBox::before{
+top:15px;
+left:25px;
+}
+
+#resultBox::after{
+bottom:15px;
+right:25px;
+}
+
+/* Watermark Logo */
+
+.resultBox::before{
+content:"";
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:320px;
+height:320px;
+background:url('logo.png') center/contain no-repeat;
+opacity:0.06;
+z-index:-1;
+}
+
+/* PRINT RESULT DESIGN */
+/* Header */
+
+.printHeader{
+text-align:center;
+padding-bottom:8px; !Important;
+margin-bottom:10px; !important;
+position:relative;
+z-index:2;
+border-bottom:3px solid #c8a96b;
+}
+
+.printLogo{
+width:75px; !important
+height:75px; !important;
+object-fit:cover;
+border-radius:50%;
+border:5px solid gold;
+padding:4px;
+background:white;
+box-shadow:0 4px 12px rgba(0,0,0,0.2);
+margin-bottom:4px; !important;
+}
+
+.printHeader h1{
+font-size:40px;
+color:#123c8a;
+font-weight:900;
+letter-spacing:2px;
+margin-bottom:2px; !important;
+line-height:1.1 !important;
+text-transform:uppercase;
+}
+
+/* Reduce line spacing */
+
+.regText,
+.tagLine{
+font-size:14px;
+font-weight:bold;
+color:#444;
+line-height:1.1 !important;
+margin:1px 0 !important;
+}
+
+.tagLine{
+font-size:14px;
+color:#666;
+font-style:italic;
+margin-top:5px;
+line-height:1.1 !important;
+}
+
+/* Certificate Title */
+
+.certificateTitle{
+text-align:center;
+font-size:38px;
+font-weight:800;
+color:#8b6f47;
+margin:12px 0 !important;
+line-height:0.5 !important
+text-transform:uppercase;
+letter-spacing:4px;
+font-family:"Georgia",serif;
+}
+
+/* Student Information */
+
+.studentInfo{
+margin-top:8px !important;
+padding:14px 20px !important;
+background:rgba(255,255,255,0.45);
+border-radius:12px;
+border:2px dashed #b08d57;
+font-size:21px;
+line-height:1.5 !important;
+position:relative;
+z-index:2;
+width:100%;
+margin-left:auto;
+margin-right:auto;
+}
+
+.studentInfo p{
+margin-bottom:3px !important;
+}
+
+/* Marks Section */
+
+.marksSection{
+margin-top:10px !important;
+padding:14px 20px !important;
+background:rgba(255,255,255,0.5);
+border-radius:12px;
+border:2px solid #d6c19c;
+font-size:21px;
+line-height:1.5 !important;
+position:relative;
+z-index:2;
+width:100%;
+margin-left:auto;
+margin-right:auto;
+text-align:center;
+}
+
+/* Status badge */
+
+.resultStatus{
+display:inline-block;
+padding:6px 10px !important;
+border-radius:30px;
+font-size:24px;
+font-weight:bold;
+letter-spacing:2px;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Remove extra hr gaps */
+
+hr{
+margin:6px 0 !important;
+}
+
+/* Signature Area */
+
+.signatureArea{
+display:flex;
+justify-content:space-between;
+align-items:flex-end;
+
+margin-top:5px;
+
+padding:0 8px;
+
+font-size:16px;
+font-weight:bold;
+
+line-height:1.1;
+
+position:relative;
+top:-10px;
+}
+
+.signatureArea div{
+text-align:center;
+width:160px;
+line-height:1.2;
+}
+
+/* Print Button */
+
+#resultBox button{
+margin-top:10;
+}
+
+@media(max-width:100px){
+
+header h1{
+font-size:24px;
+}
+
+.page-title{
+font-size:28px;
+}
+
+.login-box{
+padding:20px;
+}
+
+.questionTitle{
+font-size:20px;
+}
+
+.option{
+font-size:16px;
+}
+
+}
+
+/* TOP NAVIGATION */
+
+.topNav{
+position:sticky;
+top:0;
+z-index:999;
+display:flex;
+gap:10px;
+justify-content:center;
+padding:12px;
+background:white;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.topNav button{
+width:auto;
+padding:10px 18px;
+font-size:15px;
+border-radius:8px;
+}
+
+/* COMPACT PRINT LAYOUT */
+
+@media print{
+
+@page{
+size:A4 landscape;
+margin:4mm;
+}
+
+/* Reset */
+
+html,
+body{
+width:auto; !important;
+height:auto; !important;
+margin:0 !important;
+padding:0 !important;
+overflow:hidden !important;
+background:white !important;
+
+-webkit-print-color-adjust:exact !important;
+print-color-adjust:exact !important;
+}
+
+/* Hide everything */
+
+body *{
+visibility:hidden;
+}
+
+/* Show only result */
+
+#resultBox,
+#resultBox *{
+visibility:visible;
+}
+
+/* Main result box */
+
+#resultBox{
+
+position:absolute;
+top:0;
+left:0;
+
+width:100% !important;
+max-width:100% !important;
+
+height:auto !important;
+min-height:auto !important;
+
+margin:0 !important;
+padding:12px 20px !important;
+
+overflow:hidden !important;
+
+box-shadow:0 !important;
+
+border:8px solid #8b6f47 !important;
+outline:2px double #d4af37 !important;
+outline-offset:-6px !important;
+
+background:
+linear-gradient(rgba(255,248,235,0.96),
+rgba(248,242,225,0.96)) !important;
+
+page-break-inside:avoid !important;
+break-inside:avoid !important;
+}
+
+/* Remove all forced breaks */
+
+.printHeader,
+.studentInfo,
+.marksSection,
+.signatureArea,
+.resultBox,
+#resultData,
+#resultBox div{
+page-break-inside:auto !important;
+break-inside:auto !important;
+
+page-break-after:auto !important;
+break-after:auto !important;
+
+page-break-before:auto !important;
+break-before:auto !important;
+}
+
+/* Header */
+
+.printHeader{
+padding-bottom:6px !important;
+margin-bottom:8px !important;
+}
+
+.printLogo{
+width:70px !important;
+height:70px !important;
+margin-bottom:4px !important;
+}
+
+.printHeader h1{
+font-size:34px !important;
+margin-bottom:2px !important;
+line-height:1.1 !important;
+}
+
+/* Text spacing */
+
+.regText,
+.tagLine{
+line-height:1.1 !important;
+margin:1px 0 !important;
+}
+
+/* Title */
+
+.certificateTitle{
+font-size:28px !important;
+margin:10px 0 !important;
+line-height:1.1 !important;
+}
+
+/* Student info */
+
+.studentInfo{
+
+width:100% !important;
+
+margin-top:6px !important;
+
+padding:10px 18px !important;
+
+line-height:1.4 !important;
+
+font-size:20px !important;
+}
+
+.studentInfo p{
+margin-bottom:2px !important;
+}
+
+/* Marks */
+
+.marksSection{
+
+width:100% !important;
+
+margin-top:8px !important;
+
+padding:8px 18px !important;
+
+line-height:1.4 !important;
+
+font-size:20px !important;
+}
+
+/* Signature */
+
+.signatureArea{
+margin-top:0 !important;
+top:-20px !important;
+padding:0 5px !important;
+transform:translateY(-12px);
+}
+
+.authSign{
+white-space:nowrap;
+}
+
+.signatureArea div{
+text-align:center;
+width:190px !important;
+font-size:14px !important;
+white-space:nowrap;
+}
+
+/* PASS badge */
+
+.resultStatus{
+padding:4px 18px !important;
+font-size:18px !important;
+}
+
+/* HR compact */
+
+hr{
+margin:4px 0 !important;
+}
+
+/* Hide button */
+
+#resultBox button{
+display:none !important;
+}
+
+}
+
+/* REMOVE EXTRA SPACING */
+
+.container{
+padding:0 !important;
+margin:0 !important;
+}
+
+.login-box{
+box-shadow:none !important;
+border:none !important;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+
+<div class="topNav">
+
+<button onclick="goHome()">
+🏠 Home
+</button>
+
+<button onclick="restartExam()">
+🔄 Restart Exam
+</button>
+
+<button onclick="scrollToResult()">
+📄 Result
+</button>
+
+</div>
+
+<header>
+
+<img src="logo.png">
+
+<h1>BHAGBAT COMPUTER CENTRE</h1>
+
+<p>Online Examination System</p>
+
+</header>
+
+<div class="notice">
+
+Welcome to Premium Online Exam Portal | Practice • Test • Result
+
+</div>
+
+<div class="container">
+
+<h2 class="page-title">Student Secure Login</h2>
+
+<div class="login-box">
+
+<h2>Enter Your Details</h2>
+
+<input
+type="text"
+id="studentName"
+placeholder="Enter Student Name"
+readonly>
+
+<input
+type="text"
+id="rollNumber"
+placeholder="Roll Number"
+readonly>
+
+<select id="studentClass" disabled>
+<option>Select Class</option>
+<option>Class I</option>
+<option>Class II</option>
+<option>Class III</option>
+<option>Class IV</option>
+<option>Class V</option>
+<option>Class VI</option>
+<option>Class VII</option>
+<option>Class VIII</option>
+<option>Class IX</option>
+<option>Class X</option>
+<option>Class XI</option>
+<option>Class XII</option>
+</select>
+<select id="subject" disabled>
+<option>Select Subject</option>
+<option>English</option>
+<option>Bengali</option>
+<option>Hindi</option>
+<option>Mathematics</option>
+<option>Science</option>
+<option>Social Studies</option>
+<option>Social Science</option>
+<option>Social Science History</option>
+<option>Social Science Geography</option>
+<option>Social Science Civics</option>
+<option>Social Science Economics</option>
+<option>Social Science Political Science</option>
+<option>Physics</option>
+<option>Chemistry</option>
+<option>Biology</option>
+<option>Environmental Studies</option>
+<option>Environmental Science</option>
+<option>Computer Science</option>
+<option>Information Technology (IT-402)</option>
+<option>Information Technology (IT-802)</option>
+</select>
+
+</div>
+
+</div>
+
+<!-- EXAM PANEL -->
+
+<div class="container">
+
+<div class="login-box" id="examBox" style="margin-top:30px;display:none;">
+
+<h2>Live Examination Panel</h2>
+
+<p><b>Subject:</b></p>
+
+<select id="subjectSelect">
+<option>Computer Basics</option>
+<option>MS Word</option>
+<option>Excel</option>
+<option>Internet</option>
+<option>Programming</option>
+<option>English</option>
+<option>Bengali</option>
+<option>Hindi</option>
+<option>Mathematics</option>
+<option>Science</option>
+<option>Environmental Studies(1 to 5</option>
+<option>Environmental Science(6 to 12</option>
+<option>Social Studies</option>
+<option>Physics</option>
+<option>Chemistry</option>
+<option>Biology</option>
+<option>Information Technology-402</option>
+<option>Information Technology-802</option>
+</select>
+
+<br><br>
+
+<label style="font-weight:bold;color:#123c8a;">
+Upload Question File
+</label>
+
+<input type="file" id="fileInput"
+accept=".txt,.docx,.pdf,.jpg,.jpeg,.png">
+
+<br><br>
+
+<textarea id="questionBox"
+placeholder="Uploaded questions will appear here..."
+style="
+width:100%;
+height:220px;
+padding:15px;
+border-radius:12px;
+border:2px solid #dbeafe;
+font-size:16px;
+resize:vertical;
+"></textarea>
+
+<br><br>
+
+<button onclick="loadQuestionsFromText()">
+Load Questions
+</button>
+
+<br><br>
+
+<!-- TIMER SETTINGS -->
+
+<div style="
+background:#eef4ff;
+padding:20px;
+border-radius:12px;
+margin-bottom:20px;
+">
+
+<h3 style="
+color:#123c8a;
+margin-bottom:15px;
+">
+Timer Settings
+</h3>
+
+<label style="font-weight:bold;">
+Select Timer Mode
+</label>
+
+<select id="timerMode">
+
+<option value="total">
+Total Exam Time
+</option>
+
+<option value="perQuestion">
+Per Question Time
+</option>
+
+</select>
+
+<br><br>
+
+<label style="font-weight:bold;">
+Enter Time (Minutes)
+</label>
+
+<input type="number"
+id="timeInput"
+value="1"
+min="1">
+
+<p style="
+margin-top:10px;
+color:#555;
+font-size:14px;
+">
+
+For Per Question Mode:
+Each question gets this time separately.
+
+</p>
+
+</div>
+
+<p><b>Instructions:</b></p>
+
+<ul style="padding-left:20px;line-height:1.8;">
+<li>Total Questions: Auto Detect</li>
+<li>Each Question: 1 Mark</li>
+<li>No Negative Marking</li>
+<li>One Question At A Time</li>
+<li>Auto Next After Answer</li>
+</ul>
+
+<br>
+
+<div class="timerBox">
+
+⏰ Time Left:
+<span id="timer">Not Started</span>
+
+</div>
+
+<div class="questionCard">
+
+<div id="questionArea"></div>
+
+<div id="statusBox"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ================= ADMIN APPROVAL PANEL ================= -->
+
+<div class="container">
+
+<div class="login-box" style="margin-top:30px;">
+
+<h2 style="color:#123c8a;text-align:center;">
+Admin Student Approval Panel
+</h2>
+
+<div id="studentList"></div>
+
+</div>
+
+</div>
+
+<!-- RESULT -->
+
+<div class="container">
+
+<div class="login-box" id="resultBox" style="margin-top:30px;display:none;">
+
+<h2>Exam Result</h2>
+
+<div class="resultBox" id="resultData"></div>
+
+</div>
+
+<footer>
+
+<p>
+© 2026 Bhagbat Computer Centre | Online Exam System
+</p>
+
+</footer>
+
+<!-- DOCX READER -->
+<script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+
+<!-- PDF READER -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<!-- OCR IMAGE READER -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@2/dist/tesseract.min.js"></script>
+
+<script>
+
+function sendToCertificate(){
+
+localStorage.setItem(
+"certStudent",
+document.getElementById("studentName").value
+);
+
+localStorage.setItem(
+"certCourse",
+document.getElementById("subjectSelect").value
+);
+
+localStorage.setItem(
+"certDuration",
+"3 Months"
+);
+
+let percent =
+((marks/questions.length)*100).toFixed(2);
+
+let grade = "F";
+
+if(percent >= 90){
+grade = "A+";
+}
+else if(percent >= 80){
+grade = "A";
+}
+else if(percent >= 70){
+grade = "B+";
+}
+else if(percent >= 60){
+grade = "B";
+}
+else if(percent >= 50){
+grade = "C";
+}
+else if(percent >= 33){
+grade = "D";
+}
+
+localStorage.setItem(
+"certGrade",
+grade
+);
+
+let today = new Date();
+
+localStorage.setItem(
+"certDate",
+today.toLocaleDateString("en-GB")
+);
+
+let regNo =
+"BCC-" +
+Math.floor(1000 + Math.random()*9000);
+
+localStorage.setItem(
+"certReg",
+regNo
+);
+
+window.open(
+"certificate-system.html",
+"_blank"
+);
+
+}
+
+let adminPassword = "1234";
+
+// ================= AUTO LOAD STUDENT =================
+
+window.addEventListener("load", ()=>{
+
+let student =
+JSON.parse(localStorage.getItem("currentStudent"));
+
+if(student){
+
+document.getElementById("studentName").value =
+student.name;
+
+document.getElementById("rollNumber").value =
+student.roll;
+
+document.getElementById("studentClass").value =
+student.className;
+
+document.getElementById("subject").value =
+student.subject;
+
+}
+
+});
+
+// ================= FILE UPLOAD =================
+document.getElementById("fileInput")
+.addEventListener("change", handleFileUpload);
+
+async function handleFileUpload(event){
+
+let file = event.target.files[0];
+
+if(!file){
+return;
+}
+
+let name = file.name.toLowerCase();
+
+// TXT
+
+if(name.endsWith(".txt")){
+
+let reader = new FileReader();
+
+reader.onload = function(e){
+
+document.getElementById("questionBox").value =
+e.target.result;
+
+};
+
+reader.readAsText(file);
+
+}
+
+// DOCX
+
+else if(name.endsWith(".docx")){
+
+let reader = new FileReader();
+
+reader.onload = function(e){
+
+mammoth.extractRawText({
+arrayBuffer:e.target.result
+})
+
+.then(function(result){
+
+document.getElementById("questionBox").value =
+result.value;
+
+});
+
+};
+
+reader.readAsArrayBuffer(file);
+
+}
+
+// PDF
+
+else if(name.endsWith(".pdf")){
+
+document.getElementById("questionBox").value =
+"Reading PDF... Please wait";
+
+let reader = new FileReader();
+
+reader.onload = async function(e){
+
+let pdf = await pdfjsLib.getDocument({
+data:e.target.result
+}).promise;
+
+let text = "";
+
+for(let i=1;i<=pdf.numPages;i++){
+
+let page = await pdf.getPage(i);
+
+let content = await page.getTextContent();
+
+content.items.forEach(function(item){
+
+text += item.str + " ";
+
+});
+
+text += "\n\n";
+
+}
+
+document.getElementById("questionBox").value = text;
+
+};
+
+reader.readAsArrayBuffer(file);
+
+}
+
+// IMAGE OCR
+
+else if(name.match(/\.(jpg|jpeg|png)$/)){
+
+document.getElementById("questionBox").value =
+"Reading Image... Please wait";
+
+Tesseract.recognize(
+file,
+'eng'
+)
+
+.then(({data:{text}})=>{
+
+document.getElementById("questionBox").value =
+text;
+
+});
+
+}
+
+else{
+
+alert("Unsupported File");
+
+}
+
+}
+
+// ================= QUESTIONS =================
+
+let questions = [
+
+{
+q:"What is the full form of CPU?",
+a:"Central Process Unit",
+b:"Central Processing Unit",
+c:"Computer Primary Unit",
+d:"Control Processing Unit",
+ans:"b"
+},
+
+{
+q:"Which device is used to type text?",
+a:"Monitor",
+b:"Keyboard",
+c:"Printer",
+d:"Speaker",
+ans:"b"
+},
+
+{
+q:"Which software is used for typing?",
+a:"MS Word",
+b:"Paint",
+c:"Excel",
+d:"Chrome",
+ans:"a"
+},
+
+{
+q:"Which is an input device?",
+a:"Mouse",
+b:"Monitor",
+c:"Projector",
+d:"Printer",
+ans:"a"
+},
+
+{
+q:"Which key is used to delete text?",
+a:"Shift",
+b:"Ctrl",
+c:"Delete",
+d:"Alt",
+ans:"c"
+}
+
+];
+
+// ================= PARSE QUESTIONS =================
+
+function loadQuestionsFromText(){
+
+let raw = document
+.getElementById("questionBox")
+.value
+.trim();
+
+if(raw===""){
+alert("No questions found");
+return;
+}
+
+let parsedQuestions = [];
+
+/* SPLIT QUESTIONS */
+
+let questionBlocks = raw.split(
+/(?=Q\s*\d+\.?|^\d+\)|^\d+\.)/gim
+);
+
+questionBlocks.forEach(block=>{
+
+let lines = block
+.split("\n")
+.map(x=>x.trim())
+.filter(x=>x!="");
+
+if(lines.length < 5) return;
+
+let q = "";
+let a = "";
+let b = "";
+let c = "";
+let d = "";
+let ans = "";
+
+lines.forEach(line=>{
+
+/* QUESTION */
+
+if(
+!q &&
+!line.match(/^[a-d][\)\.\:\- ]/i) &&
+!line.match(/answer|ans|correct/i)
+){
+q = line;
+}
+
+/* OPTIONS */
+
+if(line.match(/^[aA][\)\.\:\- ]/)){
+a = line.replace(/^[aA][\)\.\:\- ]+/,"").trim();
+}
+
+if(line.match(/^[bB][\)\.\:\- ]/)){
+b = line.replace(/^[bB][\)\.\:\- ]+/,"").trim();
+}
+
+if(line.match(/^[cC][\)\.\:\- ]/)){
+c = line.replace(/^[cC][\)\.\:\- ]+/,"").trim();
+}
+
+if(line.match(/^[dD][\)\.\:\- ]/)){
+d = line.replace(/^[dD][\)\.\:\- ]+/,"").trim();
+}
+
+/* ANSWER */
+
+if(line.match(/answer|ans|correct/i)){
+
+ans = (
+line
+.toLowerCase()
+.match(/\b[a-d]\b/)
+)?.[0] || '';
+
+}
+
+});
+
+if(q && a && b && c && d && ans){
+
+parsedQuestions.push({
+q,a,b,c,d,ans
+});
+
+}
+
+});
+
+/* SUCCESS */
+
+if(parsedQuestions.length > 0){
+
+questions = parsedQuestions;
+
+currentQuestion = 0;
+marks = 0;
+
+timerStarted = false;
+
+clearInterval(timerInterval);
+
+totalSeconds = questions.length * 60;
+
+document.getElementById("timer").innerHTML =
+"Not Started";
+
+loadQuestion();
+
+alert(parsedQuestions.length +
+" Questions Loaded Successfully ✔");
+
+}
+else{
+
+alert("Questions format not detected");
+
+}
+
+}
+
+function shuffleQuestions(array){
+
+for(let i = array.length - 1; i > 0; i--){
+
+let j = Math.floor(Math.random() * (i + 1));
+
+[array[i], array[j]] = [array[j], array[i]];
+
+}
+
+return array;
+
+}
+
+// ================= VARIABLES =================
+
+let currentQuestion = 0;
+let marks = 0;
+
+let timerStarted = false;
+
+let totalSeconds = 300;
+
+let timerInterval;
+
+/* TIMER SETTINGS */
+
+let timerMode = "total";
+
+let perQuestionSeconds = 60;
+
+// ================= START EXAM =================
+
+function startExam(){
+
+/* SHUFFLE QUESTIONS */
+
+questions = shuffleQuestions(questions);
+
+/* RESET */
+
+currentQuestion = 0;
+marks = 0;
+
+timerStarted = false;
+
+clearInterval(timerInterval);
+
+/* TIMER SETTINGS */
+
+timerMode =
+document.getElementById("timerMode").value;
+
+let inputMinutes =
+parseInt(
+document.getElementById("timeInput").value
+) || 1;
+
+/* TOTAL TIMER */
+
+if(timerMode === "total"){
+
+totalSeconds = inputMinutes * 60;
+
+}
+
+/* PER QUESTION TIMER */
+
+else{
+
+perQuestionSeconds = inputMinutes * 60;
+
+totalSeconds = perQuestionSeconds;
+
+}
+
+/* SHOW EXAM */
+
+document.getElementById("examBox").style.display =
+"block";
+
+/* LOAD FIRST QUESTION */
+
+loadQuestion();
+
+/* SCROLL */
+
+saveResultToFirebase({
+
+name:
+document.getElementById("studentName").value,
+
+roll:
+document.getElementById("rollNumber").value,
+
+className:
+document.getElementById("studentClass").value,
+
+subject:
+document.getElementById("subjectSelect").value,
+
+marks: marks,
+
+total: questions.length,
+
+percentage:
+((marks/questions.length)*100).toFixed(2),
+
+grade: grade,
+
+result: result,
+
+date: new Date().toLocaleString()
+
+});
+
+window.scrollTo({
+top:document.getElementById("examBox").offsetTop,
+behavior:"smooth"
+});
+
+}
+// ================= LOAD QUESTION =================
+
+function loadQuestion(){
+
+/* PER QUESTION TIMER RESET */
+
+if(timerMode === "perQuestion"){
+
+clearInterval(timerInterval);
+
+timerStarted = false;
+
+totalSeconds = perQuestionSeconds;
+
+}
+
+if(currentQuestion >= questions.length){
+
+showResult();
+
+return;
+}
+
+let q = questions[currentQuestion];
+
+document.getElementById("questionArea").innerHTML = `
+
+<div class="questionTitle">
+
+Q${currentQuestion+1}. ${q.q}
+
+</div>
+
+<div class="optionBox">
+
+<label class="option">
+
+<input type="radio" name="mcq"
+onclick="checkAnswer('a')">
+
+<span>A.</span>
+
+${q.a}
+
+</label>
+
+<label class="option">
+
+<input type="radio" name="mcq"
+onclick="checkAnswer('b')">
+
+<span>B.</span>
+
+${q.b}
+
+</label>
+
+<label class="option">
+
+<input type="radio" name="mcq"
+onclick="checkAnswer('c')">
+
+<span>C.</span>
+
+${q.c}
+
+</label>
+
+<label class="option">
+
+<input type="radio" name="mcq"
+onclick="checkAnswer('d')">
+
+<span>D.</span>
+
+${q.d}
+
+</label>
+
+</div>
+
+`;
+
+document.getElementById("statusBox").innerHTML="";
+
+}
+
+// ================= TIMER =================
+
+function startTimer(){
+
+if(timerStarted) return;
+
+timerStarted = true;
+
+updateTimer();
+
+timerInterval = setInterval(updateTimer,1000);
+
+}
+
+function updateTimer(){
+
+let minutes = Math.floor(totalSeconds / 60);
+
+let seconds = totalSeconds % 60;
+
+document.getElementById("timer").innerHTML =
+minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+if(totalSeconds <= 0){
+
+clearInterval(timerInterval);
+
+showResult();
+
+return;
+
+}
+
+totalSeconds--;
+
+}
+
+// ================= CHECK ANSWER =================
+
+function checkAnswer(selected){
+
+startTimer();
+
+let q = questions[currentQuestion];
+
+let statusBox = document.getElementById("statusBox");
+
+if(selected.trim().toLowerCase() === q.ans.trim().toLowerCase()){
+
+marks++;
+
+statusBox.style.color="green";
+statusBox.innerHTML="✔ Correct";
+
+}
+else{
+
+statusBox.style.color="red";
+statusBox.innerHTML="✘ Wrong";
+
+}
+
+let radios = document.querySelectorAll("input[name='mcq']");
+
+radios.forEach(function(r){
+
+r.disabled = true;
+
+});
+
+setTimeout(function(){
+
+currentQuestion++;
+
+if(currentQuestion >= questions.length){
+
+document.getElementById("questionArea").innerHTML = `
+
+<div style="text-align:center;padding:40px;">
+
+<h2 style="color:#123c8a;margin-bottom:20px;">
+Exam Completed
+</h2>
+
+<button onclick="showResult()"
+style="
+width:250px;
+font-size:22px;
+background:#16a34a;
+">
+Submit Exam
+</button>
+
+</div>
+
+`;
+
+document.getElementById("statusBox").innerHTML="";
+
+}
+else{
+
+loadQuestion();
+
+}
+
+},1000);
+
+}
+
+// ================= RESULT =================
+
+function showResult(){
+
+clearInterval(timerInterval);
+
+document.getElementById("examBox").style.display="none";
+
+document.getElementById("resultBox").style.display="block";
+
+let subject =
+document.getElementById("subjectSelect").value || "N/A";
+
+let percent = ((marks/questions.length)*100).toFixed(2);
+
+let grade = "F";
+
+if(percent >= 90){
+grade = "A+";
+}
+else if(percent >= 80){
+grade = "A";
+}
+else if(percent >= 70){
+grade = "B+";
+}
+else if(percent >= 60){
+grade = "B";
+}
+else if(percent >= 50){
+grade = "C";
+}
+else if(percent >= 33){
+grade = "D";
+}
+
+let result = percent >= 33 ? "PASS" : "FAIL";
+
+document.getElementById("resultData").innerHTML = `
+
+<div class="printHeader">
+
+<img src="logo.png" class="printLogo">
+
+<h1>BHAGBAT COMPUTER CENTRE</h1>
+
+<p class="regText">
+Kirnahar, Birbhum, Govt. Reg. No: WB-Demo-2026-001
+</p>
+
+<p class="tagLine">
+Professional Computer Education Institute
+</p>
+
+<hr>
+
+<hr>
+<div class="certificateTitle">
+Certificate of Examination
+</div>
+
+</div>
+
+<div class="studentInfo">
+
+<p>
+<b>Student Name:</b>
+${document.getElementById("studentName").value}
+</p>
+
+<p>
+<b>Roll Number:</b>
+${document.getElementById("rollNumber").value}
+</p>
+
+<p>
+<b>Class:</b>
+${document.getElementById("studentClass").value}
+</p>
+
+<p>
+<b>Subject:</b>
+${subject}
+</p>
+
+</div>
+
+<hr>
+
+<div class="marksSection">
+
+<p>
+<b>Total Questions:</b>
+${questions.length}
+</p>
+
+<p>
+<b>Correct Answers:</b>
+${marks}
+</p>
+
+<p>
+<b>Percentage:</b>
+${percent}%
+</p>
+
+<p>
+<b>Grade:</b>
+${grade}
+</p>
+
+<p>
+<b>Status:</b>
+<span class="resultStatus"
+style="
+background:${result==="PASS" ? "#16a34a" : "#dc2626"};
+color:white;
+">
+${result}
+</span>
+</p>
+
+<div class="signatureArea">
+
+<div>
+_________________<br>
+Student Signature
+</div>
+
+<div class="authSign">
+_________________<br>
+Authorized&nbsp;Signatory
+</div>
+
+</div>
+
+<button onclick="sendToCertificate()">
+📜 Generate Certificate
+</button>
+
+<br>
+
+<button onclick="adminPrintResult()">
+🖨 Print Result (Admin)
+</button>
+
+`;
+saveResultToFirebase({
+  name: document.getElementById("studentName").value,
+  roll: document.getElementById("rollNumber").value,
+  className: document.getElementById("studentClass").value,
+  subject: document.getElementById("subjectSelect").value,
+  marks: marks,
+  total: questions.length,
+  percentage: ((marks/questions.length)*100).toFixed(2),
+  grade: grade,
+  result: result,
+  date: new Date().toLocaleString()
+});
+
+window.scrollTo({
+top:document.getElementById("resultBox").offsetTop,
+behavior:"smooth"
+});
+
+}
+
+// ================= NAVIGATION =================
+
+function goHome(){
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+function restartExam(){
+
+clearInterval(timerInterval);
+
+currentQuestion = 0;
+
+marks = 0;
+
+timerStarted = false;
+
+/* HIDE RESULT */
+
+document.getElementById("resultBox").style.display =
+"none";
+
+/* SHOW EXAM */
+
+document.getElementById("examBox").style.display =
+"block";
+
+/* RESET TIMER DISPLAY */
+
+document.getElementById("timer").innerHTML =
+"Not Started";
+
+/* RESET TIMER VALUE */
+
+if(timerMode === "total"){
+
+let inputMinutes =
+parseInt(document.getElementById("timeInput").value) || 1;
+
+totalSeconds = inputMinutes * 60;
+
+}
+else{
+
+totalSeconds = perQuestionSeconds;
+
+}
+
+/* SHUFFLE AGAIN */
+
+questions = shuffleQuestions(questions);
+
+/* LOAD */
+
+loadQuestion();
+
+window.scrollTo({
+top:document.getElementById("examBox").offsetTop,
+behavior:"smooth"
+});
+
+}
+
+function scrollToResult(){
+
+let resultBox =
+document.getElementById("resultBox");
+
+/* SAFE DISPLAY CHECK */
+
+if(resultBox.style.display === "block"){
+
+window.scrollTo({
+top:resultBox.offsetTop,
+behavior:"smooth"
+});
+
+}
+else{
+
+alert("Result not generated yet");
+
+}
+
+}
+
+function adminPrintResult(){
+
+document.getElementById("adminModal").style.display =
+"flex";
+
+}
+
+/* CLOSE MODAL */
+
+function closeAdminModal(){
+
+document.getElementById("adminModal").style.display =
+"none";
+
+}
+
+/* VERIFY PASSWORD */
+
+function verifyAdminPassword(){
+
+let pass =
+document.getElementById("adminPassInput").value;
+
+if(pass === adminPassword){
+
+closeAdminModal();
+
+window.print();
+
+}
+else{
+
+alert("Wrong Password");
+
+}
+
+}
+
+/* CHANGE PASSWORD */
+
+function changeAdminPassword(){
+
+let oldPass = prompt("Enter Old Password");
+
+if(oldPass !== adminPassword){
+
+alert("Old Password Incorrect");
+return;
+
+}
+
+let newPass = prompt("Enter New Password");
+
+if(newPass.trim() === ""){
+
+alert("Password cannot be empty");
+return;
+
+}
+
+adminPassword = newPass;
+
+alert("Password Changed Successfully");
+
+}
+
+/* ENTER KEY LOGIN */
+
+function handleAdminEnter(event){
+
+if(event.key === "Enter"){
+
+verifyAdminPassword();
+
+}
+
+}
+/* =========================
+AUTO LOAD STUDENT DATA
+========================= */
+
+window.addEventListener("load",()=>{
+
+let studentName =
+localStorage.getItem("studentName");
+
+let rollNumber =
+localStorage.getItem("rollNumber");
+
+let studentClass =
+localStorage.getItem("studentClass");
+
+let studentSubject =
+localStorage.getItem("studentSubject");
+
+/* AUTO FILL */
+
+if(studentName){
+
+document.getElementById("studentName").value =
+studentName;
+
+}
+
+if(rollNumber){
+
+document.getElementById("rollNumber").value =
+rollNumber;
+
+}
+
+if(studentClass){
+
+document.getElementById("studentClass").value =
+studentClass;
+
+}
+
+if(studentSubject){
+
+document.getElementById("subject").value =
+studentSubject;
+
+}
+
+/* AUTO SHOW EXAM PANEL */
+
+document.getElementById("examBox").style.display =
+"block";
+
+});
+</script>
+
+<!-- ADMIN PASSWORD MODAL -->
+
+<div id="adminModal" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+z-index:9999;
+justify-content:center;
+align-items:center;
+">
+
+<div style="
+background:white;
+padding:25px;
+border-radius:12px;
+width:320px;
+text-align:center;
+box-shadow:0 0 20px rgba(0,0,0,0.3);
+">
+
+<h3 style="margin-bottom:15px;color:#123c8a;">
+Admin Verification
+</h3>
+
+<input
+type="password"
+id="adminPassInput"
+placeholder="Enter Password"
+style="margin-bottom:15px;"
+onkeydown="handleAdminEnter(event)"
+>
+
+<button onclick="verifyAdminPassword()">
+Login
+</button>
+
+<br><br>
+
+<button onclick="changeAdminPassword()"
+style="background:#16a34a;">
+Change Password
+</button>
+
+<br><br>
+
+<button onclick="closeAdminModal()"
+style="background:#dc2626;">
+Cancel
+</button>
+
+</div>
+</div>
+
+<!-- FIREBASE START -->
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyD2MXL0151Ks1YhGP7ZgsAZ2xxs_W47GrY",
+authDomain: "bcc-online-exam.firebaseapp.com",
+projectId: "bcc-online-exam",
+storageBucket: "bcc-online-exam.firebasestorage.app",
+messagingSenderId: "855223296755",
+appId: "1:855223296755:web:2e3030b60f5b177298cd86"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.saveResultToFirebase = async function(data){
+
+try{
+
+console.log("Saving to Firebase:", data);
+
+await addDoc(collection(db,"examResults"), data);
+
+console.log("Saved Successfully");
+
+}
+catch(error){
+
+console.error("SAVE ERROR:", error);
+
+alert("Firebase Save Failed: " + error.message);
+
+}
+
+}
+
+// ================= APPROVAL SYSTEM =================
+
+let approvedStudents = JSON.parse(
+localStorage.getItem("approvedStudents")
+) || [];
+
+// Student Approval Request
+
+function requestApproval(){
+
+let name =
+document.getElementById("studentName").value;
+
+let roll =
+document.getElementById("rollNumber").value;
+
+if(name==="" || roll===""){
+
+alert("Enter Student Details First");
+return;
+
+}
+
+let studentData = {
+name:name,
+roll:roll,
+status:"pending"
+};
+
+localStorage.setItem(
+"pendingStudent",
+JSON.stringify(studentData)
+);
+
+alert(
+"Approval Request Sent To Admin"
+);
+
+// Refresh Admin Panel
+
+loadStudentList();
+
+}
+
+// Load Student List
+
+function loadStudentList(){
+
+let studentList =
+document.getElementById("studentList");
+
+let pending =
+JSON.parse(
+localStorage.getItem("pendingStudent")
+);
+
+if(!pending){
+
+studentList.innerHTML =
+"<p>No Pending Students</p>";
+
+return;
+
+}
+
+studentList.innerHTML = `
+
+<div style="
+padding:15px;
+border:2px solid #123c8a;
+border-radius:10px;
+margin-top:10px;
+">
+
+<p><b>Name:</b> ${pending.name}</p>
+
+<p><b>Roll:</b> ${pending.roll}</p>
+
+<button onclick="approveStudent()"
+style="background:green;margin-top:10px;">
+Approve Student
+</button>
+
+</div>
+
+`;
+
+}
+
+// Approve Student
+
+function approveStudent(){
+
+let pending =
+JSON.parse(
+localStorage.getItem("pendingStudent")
+);
+
+approvedStudents.push(pending);
+
+localStorage.setItem(
+"approvedStudents",
+JSON.stringify(approvedStudents)
+);
+
+alert("Student Approved");
+
+document.getElementById("approvalBtn").innerHTML =
+"Start Exam";
+
+document.getElementById("approvalBtn").onclick =
+function(){
+
+openExamPage();
+
+};
+
+localStorage.removeItem("pendingStudent");
+
+loadStudentList();
+
+}
+
+// Open Exam Page
+
+function openExamPage(){
+
+let studentData = {
+
+name:
+document.getElementById("studentName").value,
+
+roll:
+document.getElementById("rollNumber").value,
+
+date:
+document.getElementById("date").value,
+
+
+subject:
+document.getElementById("subject").value,
+
+};
+
+localStorage.setItem(
+"currentStudent",
+JSON.stringify(studentData)
+);
+
+window.open(
+"exam-system.html",
+"_blank"
+);
+
+}
+
+// Auto Check Approval
+
+window.onload = function(){
+
+loadStudentList();
+
+let approved =
+JSON.parse(
+localStorage.getItem("approvedStudents")
+) || [];
+
+let roll =
+document.getElementById("rollNumber").value;
+
+approved.forEach(student=>{
+
+if(student.roll===roll){
+
+document.getElementById("approvalBtn").innerHTML =
+"Start Exam";
+
+document.getElementById("approvalBtn").onclick =
+function(){
+
+openExamPage();
+
+};
+
+}
+
+});
+
+};
+
+</script>
+<!-- FIREBASE END -->
+
+</body>
+</html>

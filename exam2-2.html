@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Test Chapter 2</title>
+<style>
+body{font-family:Arial;background:#f4f8ff;margin:0}
+header{background:#123c8a;color:#fff;text-align:center;padding:20px}
+.box{max-width:850px;margin:auto;background:#fff;padding:30px;margin-top:20px;border-radius:15px}
+button{padding:10px 16px;background:#123c8a;color:#fff;border:none;border-radius:8px}
+.result{font-size:22px;color:green;margin-top:20px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Online Test</h1>
+<p>Chapter 2</p>
+</header>
+
+<div class="box">
+
+<p>1. Computer is used in ______.</p>
+<input type="radio" name="q1" id="a1"> School<br>
+<input type="radio" name="q1"> Forest<br><br>
+
+<p>2. Computer is used in ______.</p>
+<input type="radio" name="q2"> River<br>
+<input type="radio" name="q2" id="a2"> Bank<br><br>
+
+<p>3. Computer saves ______.</p>
+<input type="radio" name="q3"> Water<br>
+<input type="radio" name="q3" id="a3"> Time<br><br>
+
+<button onclick="check()">Submit</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+<script>
+function check(){
+let score=0;
+if(document.getElementById("a1").checked) score++;
+if(document.getElementById("a2").checked) score++;
+if(document.getElementById("a3").checked) score++;
+document.getElementById("result").innerHTML="Your Score: "+score+"/3";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Question Upload Panel</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f7ff;
+padding:40px;
+}
+
+.uploadBox{
+max-width:900px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+h1{
+text-align:center;
+color:#123c8a;
+margin-bottom:20px;
+}
+
+select,
+textarea,
+input{
+width:100%;
+padding:12px;
+margin-top:12px;
+font-size:16px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+textarea{
+height:300px;
+resize:vertical;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:20px;
+background:#123c8a;
+color:white;
+font-size:18px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0b1c3d;
+}
+
+#status{
+margin-top:20px;
+font-size:18px;
+font-weight:bold;
+text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="uploadBox">
+
+<h1>Question Upload Panel</h1>
+
+<select id="className">
+
+<option>Class IV</option>
+<option>Class V</option>
+<option>Class VI</option>
+
+</select>
+
+<select id="subject">
+
+<option>Computer</option>
+<option>English</option>
+<option>Mathematics</option>
+
+</select>
+
+<input
+type="file"
+id="fileInput"
+accept=".txt,.docx,.pdf,.jpg,.jpeg,.png">
+
+<textarea
+id="questionBox"
+placeholder="Questions will appear here...">
+</textarea>
+
+<button onclick="uploadQuestions()">
+
+Upload Questions To Firebase
+
+</button>
+
+<div id="status"></div>
+
+</div>
+
+<!-- DOCX -->
+
+<script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+
+<!-- PDF -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<!-- OCR -->
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@2/dist/tesseract.min.js"></script>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyD2MXL0151Ks1YhGP7ZgsAZ2xxs_W47GrY",
+
+authDomain: "bcc-online-exam.firebaseapp.com",
+
+projectId: "bcc-online-exam",
+
+storageBucket: "bcc-online-exam.firebasestorage.app",
+
+messagingSenderId: "855223296755",
+
+appId: "1:855223296755:web:2e3030b60f5b177298cd86"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+/* =========================
+FILE UPLOAD
+========================= */
+
+document.getElementById("fileInput")
+.addEventListener("change",handleFileUpload);
+
+async function handleFileUpload(event){
+
+let file = event.target.files[0];
+
+if(!file){
+
+return;
+
+}
+
+let name = file.name.toLowerCase();
+
+/* TXT */
+
+if(name.endsWith(".txt")){
+
+let reader = new FileReader();
+
+reader.onload = function(e){
+
+document.getElementById("questionBox").value =
+e.target.result;
+
+};
+
+reader.readAsText(file);
+
+}
+
+/* DOCX */
+
+else if(name.endsWith(".docx")){
+
+let reader = new FileReader();
+
+reader.onload = function(e){
+
+mammoth.extractRawText({
+
+arrayBuffer:e.target.result
+
+})
+
+.then(function(result){
+
+document.getElementById("questionBox").value =
+result.value;
+
+});
+
+};
+
+reader.readAsArrayBuffer(file);
+
+}
+
+/* PDF */
+
+else if(name.endsWith(".pdf")){
+
+document.getElementById("questionBox").value =
+"Reading PDF... Please Wait";
+
+let reader = new FileReader();
+
+reader.onload = async function(e){
+
+let pdf =
+await pdfjsLib.getDocument({
+
+data:e.target.result
+
+}).promise;
+
+let text = "";
+
+for(let i=1;i<=pdf.numPages;i++){
+
+let page = await pdf.getPage(i);
+
+let content =
+await page.getTextContent();
+
+content.items.forEach(function(item){
+
+text += item.str + " ";
+
+});
+
+text += "\n\n";
+
+}
+
+document.getElementById("questionBox").value =
+text;
+
+};
+
+reader.readAsArrayBuffer(file);
+
+}
+
+/* IMAGE OCR */
+
+else if(name.match(/\.(jpg|jpeg|png)$/)){
+
+document.getElementById("questionBox").value =
+"Reading Image... Please Wait";
+
+Tesseract.recognize(
+file,
+'eng'
+)
+
+.then(({data:{text}})=>{
+
+document.getElementById("questionBox").value =
+text;
+
+});
+
+}
+
+else{
+
+alert("Unsupported File");
+
+}
+
+}
+
+/* =========================
+UPLOAD QUESTIONS
+========================= */
+
+window.uploadQuestions =
+async function(){
+
+let raw =
+document.getElementById("questionBox")
+.value
+.trim();
+
+if(raw===""){
+
+alert("No Questions Found");
+
+return;
+
+}
+
+let className =
+document.getElementById("className").value;
+
+let subject =
+document.getElementById("subject").value;
+
+let parsedQuestions = [];
+
+let questionBlocks =
+raw.split(/(?=Q\s*\d+\.?|^\d+\)|^\d+\.)/gim);
+
+questionBlocks.forEach(block=>{
+
+let lines =
+block
+.split("\n")
+.map(x=>x.trim())
+.filter(x=>x!="");
+
+if(lines.length < 5){
+
+return;
+
+}
+
+let q = "";
+let a = "";
+let b = "";
+let c = "";
+let d = "";
+let ans = "";
+
+lines.forEach(line=>{
+
+if(
+!q &&
+!line.match(/^[a-d][\)\.\:\- ]/i) &&
+!line.match(/answer|ans|correct/i)
+){
+
+q = line;
+
+}
+
+if(line.match(/^[aA][\)\.\:\- ]/)){
+
+a =
+line.replace(/^[aA][\)\.\:\- ]+/,"").trim();
+
+}
+
+if(line.match(/^[bB][\)\.\:\- ]/)){
+
+b =
+line.replace(/^[bB][\)\.\:\- ]+/,"").trim();
+
+}
+
+if(line.match(/^[cC][\)\.\:\- ]/)){
+
+c =
+line.replace(/^[cC][\)\.\:\- ]+/,"").trim();
+
+}
+
+if(line.match(/^[dD][\)\.\:\- ]/)){
+
+d =
+line.replace(/^[dD][\)\.\:\- ]+/,"").trim();
+
+}
+
+if(line.match(/answer|ans|correct/i)){
+
+ans =
+(
+line
+.toLowerCase()
+.match(/\b[a-d]\b/)
+)?.[0] || '';
+
+}
+
+});
+
+if(q && a && b && c && d && ans){
+
+parsedQuestions.push({
+q,a,b,c,d,ans
+});
+
+}
+
+});
+
+/* =========================
+SAVE TO FIREBASE
+========================= */
+
+if(parsedQuestions.length===0){
+
+alert("Question Format Not Detected");
+
+return;
+
+}
+
+document.getElementById("status").innerHTML =
+"Uploading Questions...";
+
+for(let i=0;i<parsedQuestions.length;i++){
+
+let item = parsedQuestions[i];
+
+await addDoc(collection(db,"questionBank"),{
+
+className:className,
+subject:subject,
+
+q:item.q,
+a:item.a,
+b:item.b,
+c:item.c,
+d:item.d,
+ans:item.ans,
+
+date:new Date().toLocaleString()
+
+});
+
+}
+
+document.getElementById("status").innerHTML =
+
+parsedQuestions.length +
+" Questions Uploaded Successfully";
+
+}
+
+</script>
+
+</body>
+
+</html>

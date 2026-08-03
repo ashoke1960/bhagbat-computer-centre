@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class III MCQ Test</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#f4f8ff;
+margin:0;
+padding:0;
+}
+
+header{
+background:#123c8a;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:30px 20px;
+}
+
+.box{
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+margin-bottom:20px;
+}
+
+h3{
+color:#123c8a;
+}
+
+button{
+padding:12px 20px;
+background:gold;
+border:none;
+font-weight:bold;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#123c8a;
+color:white;
+}
+
+#result{
+font-size:24px;
+font-weight:bold;
+text-align:center;
+color:green;
+margin-top:25px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Class III MCQ Test</h1>
+<p>Answer all questions</p>
+</header>
+
+<div class="container">
+
+<form id="quizForm">
+
+<div class="box">
+<h3>1. 2 + 3 = ?</h3>
+<input type="radio" name="q1" value="5"> 5<br>
+<input type="radio" name="q1" value="4"> 4<br>
+<input type="radio" name="q1" value="6"> 6
+</div>
+
+<div class="box">
+<h3>2. Opposite of Hot?</h3>
+<input type="radio" name="q2" value="Cold"> Cold<br>
+<input type="radio" name="q2" value="Warm"> Warm<br>
+<input type="radio" name="q2" value="Sun"> Sun
+</div>
+
+<div class="box">
+<h3>3. How many days in a week?</h3>
+<input type="radio" name="q3" value="7"> 7<br>
+<input type="radio" name="q3" value="5"> 5<br>
+<input type="radio" name="q3" value="10"> 10
+</div>
+
+<div class="box">
+<h3>4. A for ?</h3>
+<input type="radio" name="q4" value="Apple"> Apple<br>
+<input type="radio" name="q4" value="Ball"> Ball<br>
+<input type="radio" name="q4" value="Cat"> Cat
+</div>
+
+<div class="box">
+<h3>5. Which is an animal?</h3>
+<input type="radio" name="q5" value="Dog"> Dog<br>
+<input type="radio" name="q5" value="Chair"> Chair<br>
+<input type="radio" name="q5" value="Book"> Book
+</div>
+
+<div style="text-align:center;">
+<button type="button" onclick="checkAnswers()">Submit Test</button>
+</div>
+
+</form>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+function checkAnswers(){
+
+let score = 0;
+
+if(document.querySelector('input[name="q1"]:checked')?.value=="5") score++;
+if(document.querySelector('input[name="q2"]:checked')?.value=="Cold") score++;
+if(document.querySelector('input[name="q3"]:checked')?.value=="7") score++;
+if(document.querySelector('input[name="q4"]:checked')?.value=="Apple") score++;
+if(document.querySelector('input[name="q5"]:checked')?.value=="Dog") score++;
+
+document.getElementById("result").innerHTML =
+"Your Score: " + score + " / 5";
+
+}
+</script>
+
+</body>
+</html>

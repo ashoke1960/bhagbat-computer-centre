@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Study Materials</title>
+
+<script>
+let pass = prompt("Enter Password:");
+
+if(pass !== "1234"){
+alert("Wrong Password");
+window.location="index.html";
+}
+</script>
+
+</head>
+
+<body>
+<!-- PREMIUM UNIVERSAL MENU START -->
+
+<style>
+.premium-menu{
+position:sticky;
+top:0;
+z-index:99999;
+background:linear-gradient(90deg,#0f172a,#1e3a8a,#2563eb);
+padding:10px;
+text-align:center;
+box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+
+.premium-menu a{
+color:white;
+text-decoration:none;
+display:inline-block;
+padding:10px 14px;
+margin:3px;
+font-size:15px;
+font-weight:bold;
+border-radius:8px;
+transition:.3s;
+}
+
+.premium-menu a:hover{
+background:gold;
+color:black;
+transform:translateY(-2px);
+}
+
+@media(max-width:768px){
+.premium-menu a{
+display:block;
+margin:5px 0;
+}
+}
+</style>
+
+<div class="premium-menu">
+<a href="index.html">Home</a>
+<a href="notes-system.html">Notes</a>
+<a href="exam-system.html">Exam</a>
+<a href="result-system.html">Result</a>
+<a href="certificate-system.html">Certificate</a>
+<a href="notice.html">Notice</a>
+<a href="admission.html">Admission</a>
+</div>
+
+<!-- PREMIUM UNIVERSAL MENU END -->
+style="font-family:Arial;padding:30px;background:#f5f7fb;">
+
+<h1>Welcome to Study Materials</h1>
+<p>Select your class from menu bar.</p>
+
+</body>
+</html>

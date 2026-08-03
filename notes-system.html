@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bhagbat Computer Centre - Premium Notes System</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:linear-gradient(135deg,#dbeafe,#eff6ff);
+min-height:100vh;
+}
+
+.header{
+background:linear-gradient(90deg,#1d4ed8,#2563eb,#3b82f6);
+color:#fff;
+text-align:center;
+padding:22px 15px;
+box-shadow:0 8px 20px rgba(0,0,0,.12);
+}
+
+.header h1{font-size:32px;}
+.header p{font-size:18px;margin-top:6px;}
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:25px 15px;
+}
+
+.card{
+background:#fff;
+padding:25px;
+border-radius:22px;
+box-shadow:0 15px 35px rgba(0,0,0,.08);
+}
+
+label{
+font-weight:bold;
+display:block;
+margin-top:15px;
+margin-bottom:8px;
+color:#1e3a8a;
+font-size:18px;
+}
+
+select,input,textarea{
+width:100%;
+padding:12px;
+font-size:17px;
+border:2px solid #93c5fd;
+border-radius:12px;
+outline:none;
+display:block;
+}
+
+textarea{
+height:420px;
+resize:vertical;
+line-height:1.6;
+}
+
+.tools{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:18px;
+}
+
+button{
+padding:12px 18px;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+color:#fff;
+}
+
+.save{background:#16a34a;}
+.print{background:#2563eb;}
+.copy{background:#9333ea;}
+.clear{background:#dc2626;}
+.admin{background:#f59e0b;}
+.home{background:#475569;}
+.pass{background:#0f766e;}
+.logout{background:#64748b;}
+
+.notice{
+margin-top:18px;
+padding:14px;
+background:#eff6ff;
+border-left:5px solid #2563eb;
+border-radius:10px;
+color:#1e3a8a;
+line-height:1.7;
+}
+
+.footer{
+text-align:center;
+padding:20px;
+color:#555;
+}
+
+@media(max-width:768px){
+button{width:100%;}
+.header h1{font-size:26px;}
+textarea{height:320px;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- PREMIUM UNIVERSAL MENU START -->
+
+<style>
+.premium-menu{
+position:sticky;
+top:0;
+z-index:99999;
+background:linear-gradient(90deg,#0f172a,#1e3a8a,#2563eb);
+padding:10px;
+text-align:center;
+box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+
+.premium-menu a{
+color:white;
+text-decoration:none;
+display:inline-block;
+padding:10px 14px;
+margin:3px;
+font-size:15px;
+font-weight:bold;
+border-radius:8px;
+transition:.3s;
+}
+
+.premium-menu a:hover{
+background:gold;
+color:black;
+transform:translateY(-2px);
+}
+
+@media(max-width:768px){
+.premium-menu a{
+display:block;
+margin:5px 0;
+}
+}
+</style>
+
+<div class="premium-menu">
+<a href="index.html">Home</a>
+<a href="notes-system.html">Notes</a>
+<a href="exam-system.html">Exam</a>
+<a href="result-system.html">Result</a>
+<a href="certificate-system.html">Certificate</a>
+<a href="notice.html">Notice</a>
+<a href="admission.html">Admission</a>
+</div>
+
+<!-- PREMIUM UNIVERSAL MENU END -->
+
+<div class="header">
+<h1>Bhagbat Computer Centre</h1>
+<p>Premium Notes System - Final Version</p>
+</div>
+
+<div class="container">
+<div class="card">
+
+<label>Select Class</label>
+<select id="classSelect" onchange="loadNotes()">
+<option value="class2">Class II</option>
+<option value="class3">Class III</option>
+<option value="class4">Class IV</option>
+<option value="class5">Class V</option>
+<option value="class6">Class VI</option>
+<option value="class7">Class VII</option>
+<option value="class8">Class VIII</option>
+<option value="class9">Class IX</option>
+<option value="class10">Class X</option>
+<option value="class11">Class XI</option>
+<option value="class12">Class XII</option>
+</select>
+
+<label>Select Chapter</label>
+<select id="chapterSelect" onchange="loadNotes()">
+<option value="chapter1">Chapter 1</option>
+<option value="chapter2">Chapter 2</option>
+<option value="chapter3">Chapter 3</option>
+<option value="chapter4">Chapter 4</option>
+<option value="chapter5">Chapter 5</option>
+<option value="chapter6">Chapter 6</option>
+<option value="chapter7">Chapter 7</option>
+<option value="chapter8">Chapter 8</option>
+<option value="chapter9">Chapter 9</option>
+<option value="chapter10">Chapter 10</option>
+</select>
+
+<label>Search Notes</label>
+<input type="text" id="searchBox" placeholder="Type keyword..." onkeyup="searchText()">
+
+<label>Notes Area</label>
+<textarea id="notesBox" readonly placeholder="Student View Mode"></textarea>
+
+<div class="tools">
+<button class="admin" onclick="adminLogin()">Admin Login</button>
+<button class="pass" onclick="changePassword()">Change Password</button>
+<button class="logout" onclick="logoutAdmin()">Logout</button>
+<button class="save" onclick="saveNotes()">Save</button>
+<button class="copy" onclick="copyNotes()">Copy</button>
+<button class="print" onclick="printNotes()">Print</button>
+<button class="clear" onclick="clearNotes()">Clear</button>
+<button class="home" onclick="goHome()">Home</button>
+</div>
+
+<div class="notice">
+✔ Students can read notes only.<br>
+✔ Enter key works in all password boxes.<br>
+✔ Admin password required for editing.<br>
+✔ Separate notes for each class + chapter.<br>
+✔ Mobile friendly premium version.
+</div>
+
+</div>
+</div>
+
+<div class="footer">
+© Bhagbat Computer Centre | Smart Learning Platform
+</div>
+
+<script>
+
+let adminMode=false;
+
+/* DEFAULT PASSWORDS */
+let loginUser="student";
+let loginPass="1234";
+
+let password=localStorage.getItem("notesAdminPass") || "9999";
+
+window.onload=function(){
+showLogin();
+};
+
+function popup(title,callback,isPass=true){
+
+let old=document.getElementById("overlay");
+if(old) old.remove();
+
+let box=document.createElement("div");
+box.id="overlay";
+
+box.innerHTML=`
+<div style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:99999;
+padding:15px;">
+
+<div style="
+background:#fff;
+width:340px;
+max-width:100%;
+padding:28px;
+border-radius:18px;
+text-align:center;">
+
+<h2 style="color:#2563eb;margin-bottom:14px;">${title}</h2>
+
+<input id="popInput"
+type="${isPass?'password':'text'}"
+placeholder="Type Here"
+onkeyup="if(event.key==='Enter'){submitPopup();}"
+style="
+width:100%;
+padding:12px;
+font-size:18px;
+border:2px solid #93c5fd;
+border-radius:10px;">
+
+<button onclick="submitPopup()"
+style="
+margin-top:15px;
+width:100%;
+padding:12px;
+background:#2563eb;
+color:#fff;
+border:none;
+border-radius:10px;
+font-size:17px;
+font-weight:bold;">Enter</button>
+
+<button onclick="closePopup()"
+style="
+margin-top:10px;
+width:100%;
+padding:10px;
+background:#64748b;
+color:#fff;
+border:none;
+border-radius:10px;">Cancel</button>
+
+</div>
+</div>
+`;
+
+document.body.appendChild(box);
+
+setTimeout(()=>{
+document.getElementById("popInput").focus();
+},100);
+
+window.popupCallback=callback;
+}
+
+function submitPopup(){
+let v=document.getElementById("popInput").value;
+if(window.popupCallback) window.popupCallback(v);
+}
+
+function closePopup(){
+let x=document.getElementById("overlay");
+if(x) x.remove();
+}
+
+function showLogin(){
+
+popup("Enter User Name",function(user){
+
+if(user===loginUser){
+
+closePopup();
+
+popup("Enter Password",function(pass){
+
+if(pass===loginPass){
+
+closePopup();
+loadNotes();
+
+}else{
+alert("Wrong Password");
+}
+
+},true);
+
+}else{
+alert("Wrong User Name");
+}
+
+},false);
+
+}
+
+function getKey(){
+return classSelect.value+"_"+chapterSelect.value;
+}
+
+function loadNotes(){
+notesBox.value=localStorage.getItem(getKey()) || "";
+}
+
+function adminLogin(){
+
+popup("Admin Password",function(pass){
+
+if(pass===password){
+
+adminMode=true;
+notesBox.removeAttribute("readonly");
+closePopup();
+alert("Admin Mode Activated");
+
+}else{
+alert("Wrong Password");
+}
+
+});
+
+}
+
+function saveNotes(){
+
+if(!adminMode){
+alert("Admin Login Required");
+return;
+}
+
+localStorage.setItem(getKey(),notesBox.value);
+alert("Saved Successfully");
+}
+
+function clearNotes(){
+
+if(!adminMode){
+alert("Admin Login Required");
+return;
+}
+
+if(confirm("Clear this chapter notes?")){
+localStorage.removeItem(getKey());
+notesBox.value="";
+}
+
+}
+
+function copyNotes(){
+notesBox.select();
+document.execCommand("copy");
+alert("Copied");
+}
+
+function printNotes(){
+
+let cls=classSelect.options[classSelect.selectedIndex].text;
+let ch=chapterSelect.options[chapterSelect.selectedIndex].text;
+
+let w=window.open("","","width=900,height=700");
+
+w.document.write(`
+<html>
+<head>
+<title>Print</title>
+<style>
+body{font-family:Arial;padding:30px;line-height:1.7;}
+h1,h2,h3{text-align:center;}
+pre{white-space:pre-wrap;font-size:20px;}
+</style>
+</head>
+<body>
+<h1>Bhagbat Computer Centre</h1>
+<h2>${cls}</h2>
+<h3>${ch}</h3>
+<hr>
+<pre>${notesBox.value}</pre>
+</body>
+</html>
+`);
+
+w.document.close();
+w.onload=function(){w.print();};
+
+}
+
+function searchText(){
+
+let txt=searchBox.value.toLowerCase();
+let data=notesBox.value.toLowerCase();
+
+if(txt!="" && data.includes(txt)){
+searchBox.style.border="2px solid green";
+}else{
+searchBox.style.border="2px solid #93c5fd";
+}
+
+}
+
+function changePassword(){
+
+popup("Old Admin Password",function(oldp){
+
+if(oldp===password){
+
+closePopup();
+
+popup("New Admin Password",function(newp){
+
+if(newp.trim()!==""){
+password=newp.trim();
+localStorage.setItem("notesAdminPass",password);
+closePopup();
+alert("Password Changed Successfully");
+}
+
+});
+
+}else{
+alert("Wrong Old Password");
+}
+
+});
+
+}
+
+function logoutAdmin(){
+adminMode=false;
+notesBox.setAttribute("readonly",true);
+alert("Logged Out");
+}
+
+function goHome(){
+window.location.href="index.html";
+}
+
+</script>
+
+</body>
+</html>

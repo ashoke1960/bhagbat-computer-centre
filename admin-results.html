@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Results Panel</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f4f7ff;
+padding:20px;
+}
+
+h1{
+text-align:center;
+color:#123c8a;
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-bottom:20px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:16px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+th,td{
+padding:12px;
+border:1px solid #ddd;
+text-align:center;
+}
+
+th{
+background:#123c8a;
+color:white;
+}
+
+tr:nth-child(even){
+background:#f9f9f9;
+}
+
+button{
+padding:8px 12px;
+background:#16a34a;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#15803d;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Student Result Panel</h1>
+
+<input type="text"
+id="searchBox"
+placeholder="Search by Name or Roll"
+onkeyup="searchResult()">
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Roll</th>
+<th>Class</th>
+<th>Subject</th>
+<th>Marks</th>
+<th>Total</th>
+<th>Percentage</th>
+<th>Grade</th>
+<th>Result</th>
+<th>Date</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="resultTable"></tbody>
+</table>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyD2MXL0151Ks1YhGP7ZgsAZ2xxs_W47GrY",
+authDomain: "bcc-online-exam.firebaseapp.com",
+projectId: "bcc-online-exam",
+storageBucket: "bcc-online-exam.firebasestorage.app",
+messagingSenderId: "855223296755",
+appId: "1:855223296755:web:2e3030b60f5b177298cd86"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let allData = [];
+
+async function loadData(){
+
+const snap = await getDocs(collection(db,"examResults"));
+
+allData = [];
+
+snap.forEach(doc=>{
+allData.push(doc.data());
+});
+
+renderTable(allData);
+}
+
+function renderTable(data){
+
+let html = "";
+
+data.forEach(d=>{
+html += `
+<tr>
+<td>${d.name || ""}</td>
+<td>${d.roll || ""}</td>
+<td>${d.className || ""}</td>
+<td>${d.subject || ""}</td>
+<td>${d.marks || 0}</td>
+<td>${d.total || 0}</td>
+<td>${d.percentage || 0}%</td>
+<td>${d.grade || ""}</td>
+<td>${d.result || ""}</td>
+<td>${d.date || ""}</td>
+<td>
+<button onclick='printResult(${JSON.stringify(d)})'>
+Print
+</button>
+
+<button onclick='openCertificate(${JSON.stringify(d)})'
+style="background:#123c8a;">
+Certificate
+</button>
+</td>
+</tr>
+`;
+});
+
+document.getElementById("resultTable").innerHTML =
+html || "<tr><td colspan='10'>No Data Found</td></tr>";
+}
+
+window.searchResult = function(){
+
+let value = document.getElementById("searchBox").value.toLowerCase();
+
+let filtered = allData.filter(d =>
+(d.name || "").toLowerCase().includes(value) ||
+(d.roll || "").toLowerCase().includes(value)
+);
+
+renderTable(filtered);
+};
+
+loadData();
+
+</script>
+
+</body>
+</html>

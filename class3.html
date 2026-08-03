@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class III Study Materials</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial, sans-serif;
+background:#f4f8ff;
+color:#222;
+}
+
+header{
+background:linear-gradient(90deg,#0b1c3d,#123c8a);
+color:white;
+text-align:center;
+padding:25px 15px;
+}
+
+header h1{
+font-size:34px;
+margin-bottom:8px;
+}
+
+header p{
+font-size:18px;
+color:#ffd;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:35px 20px;
+}
+
+.main-title{
+text-align:center;
+font-size:32px;
+color:#123c8a;
+margin-bottom:30px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:25px;
+}
+
+.card{
+background:white;
+border-radius:18px;
+padding:25px;
+box-shadow:0 8px 20px rgba(0,0,0,0.10);
+border-left:6px solid #123c8a;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 12px 24px rgba(0,0,0,0.15);
+}
+
+.card h2{
+font-size:24px;
+color:#123c8a;
+margin-bottom:10px;
+}
+
+.card p{
+font-weight:bold;
+margin-bottom:15px;
+color:#333;
+}
+
+.card ul{
+padding-left:20px;
+margin-bottom:18px;
+}
+
+.card li{
+margin-bottom:8px;
+}
+
+.buttons{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.btn{
+text-decoration:none;
+background:gold;
+color:black;
+padding:10px 16px;
+border-radius:8px;
+font-weight:bold;
+font-size:14px;
+}
+
+.btn:hover{
+background:#123c8a;
+color:white;
+}
+
+.back{
+text-align:center;
+margin-top:35px;
+}
+
+.back a{
+text-decoration:none;
+background:#25D366;
+color:white;
+padding:12px 22px;
+border-radius:10px;
+font-weight:bold;
+}
+
+footer{
+background:#0b1c3d;
+color:white;
+text-align:center;
+padding:18px;
+margin-top:40px;
+}
+
+@media(max-width:768px){
+header h1{
+font-size:26px;
+}
+
+.main-title{
+font-size:26px;
+}
+
+.card{
+padding:20px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<script>
+var pass = prompt("Enter Password for Class III Study Materials:");
+
+if(pass !== "3333"){
+alert("Wrong Password!");
+window.location.href="index.html";
+}
+</script>
+
+<header>
+<h1>Class III Computer Learning</h1>
+<p>Oxford Reboot (CBSE 2026-27)</p>
+</header>
+
+<div class="container">
+
+<h2 class="main-title">Premium Study Dashboard</h2>
+
+<div class="cards">
+
+<!-- Chapter 1 -->
+<div class="card">
+<h2>Chapter 1</h2>
+<p>How a Computer Works</p>
+<ul>
+<li>IPO Cycle</li>
+<li>Hardware</li>
+<li>Software</li>
+</ul>
+<div class="buttons">
+<a href="notes3-1.html" class="btn">Notes</a>
+<a href="mcq3-1.html" class="btn">MCQ</a>
+<a href="exam3-1.html" class="btn">Test</a>
+</div>
+</div>
+
+<!-- Chapter 2 -->
+<div class="card">
+<h2>Chapter 2</h2>
+<p>Windows 10</p>
+<ul>
+<li>Operating System</li>
+<li>Desktop</li>
+<li>Wallpaper</li>
+</ul>
+<div class="buttons">
+<a href="notes3-2.html" class="btn">Notes</a>
+<a href="mcq3-2.html" class="btn">MCQ</a>
+<a href="exam3-2.html" class="btn">Test</a>
+</div>
+</div>
+
+<!-- Chapter 3 -->
+<div class="card">
+<h2>Chapter 3</h2>
+<p>Let's Start MS Word</p>
+<ul>
+<li>New Document</li>
+<li>Save / Open</li>
+<li>Fonts</li>
+</ul>
+<div class="buttons">
+<a href="notes3-3.html" class="btn">Notes</a>
+<a href="mcq3-3.html" class="btn">MCQ</a>
+<a href="exam3-3.html" class="btn">Test</a>
+</div>
+</div>
+
+<!-- Chapter 4 -->
+<div class="card">
+<h2>Chapter 4</h2>
+<p>First Step to the Internet</p>
+<ul>
+<li>Uses of Internet</li>
+<li>Safety</li>
+<li>Digital Citizen</li>
+</ul>
+<div class="buttons">
+<a href="notes3-4.html" class="btn">Notes</a>
+<a href="mcq3-4.html" class="btn">MCQ</a>
+<a href="exam3-4.html" class="btn">Test</a>
+</div>
+</div>
+
+<!-- Chapter 5 -->
+<div class="card">
+<h2>Chapter 5</h2>
+<p>Tools of MS Paint</p>
+<ul>
+<li>Shapes</li>
+<li>Resize</li>
+<li>Save</li>
+</ul>
+<div class="buttons">
+<a href="notes3-5.html" class="btn">Notes</a>
+<a href="mcq3-5.html" class="btn">MCQ</a>
+<a href="exam3-5.html" class="btn">Test</a>
+</div>
+</div>
+
+<!-- Chapter 6 -->
+<div class="card">
+<h2>Chapter 6</h2>
+<p>Organizing Files and Folders</p>
+<ul>
+<li>File Explorer</li>
+<li>Create Folder</li>
+<li>Rename File</li>
+</ul>
+<div class="buttons">
+<a href="notes3-6.html" class="btn">Notes</a>
+<a href="mcq3-6.html" class="btn">MCQ</a>
+<a href="exam3-6.html" class="btn">Test</a>
+</div>
+</div>
+
+</div>
+
+<div class="back">
+<a href="index.html">⬅ Back to Home</a>
+</div>
+
+</div>
+
+<footer>
+© 2026 Bhagbat Computer Centre | Class III Digital Learning Zone
+</footer>
+
+</body>
+</html>

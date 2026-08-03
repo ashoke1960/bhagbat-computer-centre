@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Panel</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f7ff;
+padding:30px;
+}
+
+h1{
+text-align:center;
+color:#123c8a;
+margin-bottom:30px;
+}
+
+.panel{
+max-width:1200px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+.studentCard{
+border:1px solid #ddd;
+padding:20px;
+margin-bottom:20px;
+border-radius:12px;
+background:#fafafa;
+}
+
+.studentCard p{
+margin:8px 0;
+font-size:17px;
+}
+
+button{
+padding:10px 20px;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+margin-right:10px;
+margin-top:10px;
+}
+
+.approveBtn{
+background:green;
+color:white;
+}
+
+.rejectBtn{
+background:red;
+color:white;
+}
+
+.approved{
+color:green;
+font-weight:bold;
+font-size:18px;
+}
+
+.pending{
+color:orange;
+font-weight:bold;
+font-size:18px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Admin Approval Panel</h1>
+
+<div class="panel">
+
+<h2>Student Requests</h2>
+
+<div id="studentList">
+
+Loading...
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+
+import {
+
+getFirestore,
+collection,
+getDocs,
+updateDoc,
+doc,
+deleteDoc
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyD2MXL0151Ks1YhGP7ZgsAZ2xxs_W47GrY",
+
+authDomain: "bcc-online-exam.firebaseapp.com",
+
+projectId: "bcc-online-exam",
+
+storageBucket: "bcc-online-exam.firebasestorage.app",
+
+messagingSenderId: "855223296755",
+
+appId: "1:855223296755:web:2e3030b60f5b177298cd86"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+/* LOAD STUDENTS */
+
+async function loadStudents(){
+
+const querySnapshot =
+await getDocs(collection(db,"studentRequests"));
+
+let html = "";
+
+querySnapshot.forEach((studentDoc)=>{
+
+let student = studentDoc.data();
+
+html += `
+
+<div class="studentCard">
+
+<p>
+<b>Name:</b>
+${student.name}
+</p>
+
+<p>
+<b>Roll:</b>
+${student.roll}
+</p>
+
+<p>
+<b>Class:</b>
+${student.className}
+</p>
+
+<p>
+<b>Subject:</b>
+${student.subject}
+</p>
+
+<p>
+<b>Date:</b>
+${student.date}
+</p>
+
+<p>
+
+Status:
+
+${
+student.approved
+?
+
+'<span class="approved">APPROVED</span>'
+
+:
+
+'<span class="pending">PENDING</span>'
+
+}
+
+</p>
+
+<button
+class="approveBtn"
+onclick="approveStudent('${studentDoc.id}')">
+
+Approve
+
+</button>
+
+<button
+class="rejectBtn"
+onclick="rejectStudent('${studentDoc.id}')">
+
+Reject
+
+</button>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("studentList").innerHTML =
+html;
+
+}
+
+/* APPROVE */
+
+window.approveStudent = async function(id){
+
+const studentRef =
+doc(db,"studentRequests",id);
+
+await updateDoc(studentRef,{
+
+approved:true
+
+});
+
+alert("Student Approved");
+
+loadStudents();
+
+}
+
+/* REJECT */
+
+window.rejectStudent = async function(id){
+
+await deleteDoc(doc(db,"studentRequests",id));
+
+alert("Student Rejected");
+
+loadStudents();
+
+}
+
+/* AUTO LOAD */
+
+loadStudents();
+
+/* AUTO REFRESH */
+
+setInterval(loadStudents,5000);
+
+</script>
+
+</body>
+
+</html>
