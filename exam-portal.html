@@ -4,99 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SNEHALATA PUBLIC SCHOOL - Exam Management System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Firebase App & Firestore SDKs -->
-<!-- Google Firebase Cloud Database START -->
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-<script>
-  // Snehalata Public School Cloud DB Config
-  const firebaseConfig = {
-    apiKey: "AIzaSyAnXw-N6zV25Ze2Vedog7q4750IuDiDGa4",
-    authDomain: "sps-firebase-a192f.firebaseapp.com",
-    projectId: "sps-firebase-a192f",
-    storageBucket: "sps-firebase-a192f.firebasestorage.app",
-    messagingSenderId: "627444337667",
-    appId: "1:627444337667:web:d422e51c210db6f26ad236"
-  };
-
-  // Connect Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  console.log("Cloud DB Connected Successfully!");
-
-  // ১. ক্লাউডে ডাটা সেভ করার আপগ্রেডেড ফাংশন (Async + Error Catching)
-  async function syncDataToCloud() {
-      let allLocalData = {};
-      if (localStorage.length > 0) {
-          for (let i = 0; i < localStorage.length; i++) {
-              let key = localStorage.key(i);
-              allLocalData[key] = localStorage.getItem(key);
-          }
-
-          try {
-              await db.collection("sps_school_db").doc("master_data").set({
-                  store: allLocalData,
-                  lastUpdated: new Date().toISOString()
-              });
-              console.log("✅ সব ডাটা সফলভাবে গুগল ক্লাউডে সিঙ্ক হয়েছে!");
-              return true;
-          } catch (error) {
-              console.error("❌ ক্লাউডে ডাটা সেভ হতে ব্যর্থ হয়েছে:", error);
-              alert("ডাটা ক্লাউডে সেভ হয়নি! Error: " + error.message);
-              return false;
-          }
-      }
-  }
-
-  // ২. ক্লাউড থেকে ডাটা এলে LocalStorage আপডেট ও স্ক্রিন অটো-রিফ্রেশ
-  db.collection("sps_school_db").doc("master_data").onSnapshot((doc) => {
-      if (doc.exists) {
-          let cloudStore = doc.data().store;
-          let shouldReload = false;
-
-          for (let key in cloudStore) {
-              if (localStorage.getItem(key) !== cloudStore[key]) {
-                  localStorage.setItem(key, cloudStore[key]);
-                  shouldReload = true;
-              }
-          }
-
-          if (shouldReload) {
-              console.log("নতুন ডাটা পাওয়া গেছে, স্ক্রিন রিফ্রেশ হচ্ছে...");
-              setTimeout(() => {
-                  location.reload();
-              }, 300);
-          }
-      }
-  }, (error) => {
-      console.error("❌ ডাটাবেস থেকে ডাটা পড়তে সমস্যা হয়েছে:", error);
-  });
-
-// উদাহরণ: আপনার সেভ বাটন প্রসেস
-function saveExamMarks() {
-    // ১. লোকাল স্টোরেজে সেভ করলেন
-    localStorage.setItem('exam_data', JSON.stringify(marksData));
     
-    // ২. সাথে সাথেই ক্লাউডে পাঠান
-    syncDataToCloud(); 
-}
+    <!-- Tailwind & Chart.js -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-</script>
-<!-- Google Firebase Cloud Database END -->
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</body>
-</html>
-
+    <!-- FontAwesome & Google Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-   
+
+    <!-- Google Firebase Cloud Database START -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+      // Snehalata Public School Cloud DB Config
+      const firebaseConfig = {
+        apiKey: "AIzaSyAnXw-N6zV25Ze2Vedog7q4750IuDiDGa4",
+        authDomain: "sps-firebase-a192f.firebaseapp.com",
+        projectId: "sps-firebase-a192f",
+        storageBucket: "sps-firebase-a192f.firebasestorage.app",
+        messagingSenderId: "627444337667",
+        appId: "1:627444337667:web:d422e51c210db6f26ad236"
+      };
+
+      // Connect Firebase
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      console.log("Cloud DB Connected Successfully!");
+
+      // ১. ক্লাউডে ডাটা সেভ করার আপগ্রেডেড ফাংশন (Async + Cloud Sync)
+      async function syncDataToCloud() {
+          let allLocalData = {};
+          if (localStorage.length > 0) {
+              for (let i = 0; i < localStorage.length; i++) {
+                  let key = localStorage.key(i);
+                  allLocalData[key] = localStorage.getItem(key);
+              }
+
+              try {
+                  await db.collection("sps_school_db").doc("master_data").set({
+                      store: allLocalData,
+                      lastUpdated: new Date().toISOString()
+                  });
+                  console.log("✅ সব ডাটা সফলভাবে গুগল ক্লাউডে সিঙ্ক হয়েছে!");
+                  return true;
+              } catch (error) {
+                  console.error("❌ ক্লাউডে ডাটা সেভ হতে ব্যর্থ হয়েছে:", error);
+                  alert("ডাটা ক্লাউডে সেভ হয়নি! Error: " + error.message);
+                  return false;
+              }
+          }
+      }
+
+      // ২. ক্লাউড থেকে ডাটা এলে LocalStorage আপডেট ও স্ক্রিন অটো-রিফ্রেশ
+      db.collection("sps_school_db").doc("master_data").onSnapshot((doc) => {
+          if (doc.exists) {
+              let cloudStore = doc.data().store;
+              let shouldReload = false;
+
+              for (let key in cloudStore) {
+                  if (localStorage.getItem(key) !== cloudStore[key]) {
+                      localStorage.setItem(key, cloudStore[key]);
+                      shouldReload = true;
+                  }
+              }
+
+              if (shouldReload) {
+                  console.log("নতুন ডাটা পাওয়া গেছে, স্ক্রিন রিফ্রেশ হচ্ছে...");
+                  setTimeout(() => {
+                      location.reload();
+                  }, 300);
+              }
+          }
+      }, (error) => {
+          console.error("❌ ডাটাবেস থেকে ডাটা পড়তে সমস্যা হয়েছে:", error);
+      });
+    </script>
+    <!-- Google Firebase Cloud Database END -->
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -106,7 +95,6 @@ function saveExamMarks() {
             font-family: 'Cinzel', serif;
         }
         
-        /* প্রিমিয়াম এবং রাজকীয় ডাবল গোল্ডেন বর্ডার */
         .report-border {
             border: 6px double #d4af37 !important;
             outline: 2px solid #aa7c11 !important;
@@ -124,7 +112,6 @@ function saveExamMarks() {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* ফিক্স: হিডেন বাটন বা ওভারলে ইভেন্ট ব্লক প্রতিরোধে */
         .hidden {
             display: none !important;
             pointer-events: none !important;
@@ -132,9 +119,6 @@ function saveExamMarks() {
             opacity: 0 !important;
         }
 
-        /* ---------------------------------------------------- */
-        /* ১. মার্কশীটের মূল ফন্ট সাইজ (১০০% অপরিবর্তিত) */
-        /* ---------------------------------------------------- */
         #printReportArea .student-info, 
         #printReportArea [class*="student"] {
             font-size: 18px !important;
@@ -156,9 +140,6 @@ function saveExamMarks() {
             font-size: 13.5px !important;
         }
 
-        /* ---------------------------------------------------- */
-        /* ২. হাইলাইট ও কলামের কালার স্টাইল */
-        /* ---------------------------------------------------- */
         .highlight-half-yearly {
             font-weight: bold !important;
             background-color: #fef08a !important;
@@ -176,9 +157,6 @@ function saveExamMarks() {
             color: #0909FF !important;
         }
 
-        /* ---------------------------------------------------- */
-        /* ৩. কেবল স্পেস কমানোর প্রিন্ট মিডিয়া স্টাইল */
-        /* ---------------------------------------------------- */
         @page {
             size: A4 portrait;
             margin: 2mm 3mm !important;
@@ -197,28 +175,26 @@ function saveExamMarks() {
                 visibility: visible;
             }
 
-/* মোবাইলে স্ক্রলিং ও ডিসপ্লে ফিক্স */
-@media (max-width: 1024px) {
-    main {
-        flex-direction: column !important;
-    }
-    #sidebarPanel {
-        width: 100% !important;
-        margin-bottom: 1rem;
-    }
-    .tab-content {
-        overflow-x: auto !important;
-    }
-    /* মোডালগুলো যাতে মোবাইলে কেটে না যায় */
-    #adminLoginGateway > div, 
-    #teacherLoginGateway > div, 
-    #studentLoginGateway > div,
-    #addStudentModal > div,
-    #addTeacherModal > div {
-        max-height: 90vh !important;
-        overflow-y: auto !important;
-    }
-}
+            @media (max-width: 1024px) {
+                main {
+                    flex-direction: column !important;
+                }
+                #sidebarPanel {
+                    width: 100% !important;
+                    margin-bottom: 1rem;
+                }
+                .tab-content {
+                    overflow-x: auto !important;
+                }
+                #adminLoginGateway > div, 
+                #teacherLoginGateway > div, 
+                #studentLoginGateway > div,
+                #addStudentModal > div,
+                #addTeacherModal > div {
+                    max-height: 90vh !important;
+                    overflow-y: auto !important;
+                }
+            }
 
             body {
                 background: white !important;
@@ -238,7 +214,6 @@ function saveExamMarks() {
                 background: white !important;
             }
 
-            /* আউটার বর্ডারের ভেতরের অতিরিক্ত ফাঁকা স্পেস ট্রিম */
             .report-border {
                 min-height: auto !important;
                 height: auto !important;
@@ -249,7 +224,6 @@ function saveExamMarks() {
                 break-inside: avoid !important;
             }
 
-            /* সেকশনগুলোর মধ্যকার অতিরিক্ত মার্জিন কমানো */
             #printReportArea .mb-4,
             #printReportArea .mb-3,
             #printReportArea .mb-2,
@@ -260,7 +234,6 @@ function saveExamMarks() {
                 padding-bottom: 1px !important;
             }
 
-            /* টেবিল ও ফন্ট সাইজ সম্পূর্ণ অপরিবর্তিত রাখা হলো */
             #printReportArea table {
                 margin-bottom: 2px !important;
             }
@@ -274,11 +247,9 @@ function saveExamMarks() {
                 font-weight: bold !important;
             }
 
-            /* চার্ট বক্সের নিচের বিশাল ফালতু স্পেস ট্রিম করে সিগনেচার উপরে তোলা */
-            /* চার্ট বক্স কন্টেইনার ও বার চার্টের ভারসাম্য */
             .chart-box-container,
             [class*="chart"] {
-                height: 200px !important;         /* ১২৫px বাড়িয়ে ১৭০px করা হলো যাতে লাল বক্স বড় হয় */
+                height: 200px !important;
                 max-height: 200px !important;
                 width: 100% !important;
                 padding: 4px 6px !important;
@@ -288,20 +259,19 @@ function saveExamMarks() {
 
             .individual-report-card canvas,
             .individual-report-card img[src*="data:image"] {
-                max-height: 145px !important;     /* ১২০px থেকে বাড়িয়ে ১৪৫px করা হলো */
-                width: 100% !important;          /* হরাইজন্ট্যালি বিস্তৃত করার জন্য */
+                max-height: 145px !important;
+                width: 100% !important;
                 display: block !important;
-                object-fit: fill !important;      /* ডানে-বামে চওড়াভাবে ছড়িয়ে দেওয়ার জন্য */
+                object-fit: fill !important;
             }
 
-            /* সিগনেচার ইমেজের সাইজ */
             .individual-report-card img[src*="signature"],
             .individual-report-card img[src*="sign"] {
                 max-height: 32px !important;
                 object-fit: contain !important;
             }
         }
-</style>
+    </style>
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col">
 
