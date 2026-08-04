@@ -30,10 +30,13 @@
     appId: "1:627444337667:web:d422e51c210db6f26ad236"
   };
 
+  // Connect Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  let isSyncingFromCloud = false; // রিফ্রেশ লুপ বন্ধের ফ্ল্যাগ
+  console.log("Cloud DB Connected Successfully!");
+
+  let isSyncingFromCloud = false;
 
   // ১. ক্লাউডে ডাটা সেভ করার ফাংশন
   async function syncDataToCloud() {
@@ -71,7 +74,6 @@
 
       isSyncingFromCloud = false;
 
-      // ডাটা পাওয়ার পর UI আপডেট ফাংশন কল (যদি থাকে)
       if (typeof loadPortalData === "function") {
         loadPortalData();
       }
@@ -2745,14 +2747,19 @@ grandTotalMaxPossible += totalMaxPossible;
         }
 
         function saveToLocalStorage() {
-            localStorage.setItem('school_management_adminPassword', adminMasterPassword);
-            localStorage.setItem('school_management_teachersDb', JSON.stringify(teachersDb));
-            localStorage.setItem('school_management_studentsDb', JSON.stringify(studentsDb));
-            localStorage.setItem('school_management_marksDb', JSON.stringify(marksDb));
-            localStorage.setItem('school_management_logoBase64', schoolLogoBase64);
-            localStorage.setItem('school_management_bannerBase64', schoolBannerBase64);
-            localStorage.setItem('school_management_signaturesDb', JSON.stringify(signaturesDb));
-        }
+    localStorage.setItem('school_management_adminPassword', adminMasterPassword);
+    localStorage.setItem('school_management_teachersDb', JSON.stringify(teachersDb));
+    localStorage.setItem('school_management_studentsDb', JSON.stringify(studentsDb));
+    localStorage.setItem('school_management_marksDb', JSON.stringify(marksDb));
+    localStorage.setItem('school_management_logoBase64', schoolLogoBase64);
+    localStorage.setItem('school_management_bannerBase64', schoolBannerBase64);
+    localStorage.setItem('school_management_signaturesDb', JSON.stringify(signaturesDb));
+
+    // স্বয়ংক্রিয়ভাবে ফায়ারবেস ক্লাউডে ডাটা সিঙ্ক করার নির্দেশ
+    if (typeof syncDataToCloud === 'function') {
+        syncDataToCloud();
+    }
+}
 
         // DIALOG TOOGLE SYSTEMS
         function openAddTeacherModal() { document.getElementById('addTeacherModal').classList.remove('hidden'); }
