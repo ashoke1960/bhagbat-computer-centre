@@ -16,77 +16,72 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Google Firebase Cloud Database START -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-    <script>
-      // Snehalata Public School Cloud DB Config
-      const firebaseConfig = {
-        apiKey: "AIzaSyAnXw-N6zV25Ze2Vedog7q4750IuDiDGa4",
-        authDomain: "sps-firebase-a192f.firebaseapp.com",
-        projectId: "sps-firebase-a192f",
-        storageBucket: "sps-firebase-a192f.firebasestorage.app",
-        messagingSenderId: "627444337667",
-        appId: "1:627444337667:web:d422e51c210db6f26ad236"
-      };
+<script>
+  // Snehalata Public School Cloud DB Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAnXw-N6zV25Ze2Vedog7q4750IuDiDGa4",
+    authDomain: "sps-firebase-a192f.firebaseapp.com",
+    projectId: "sps-firebase-a192f",
+    storageBucket: "sps-firebase-a192f.firebasestorage.app",
+    messagingSenderId: "627444337667",
+    appId: "1:627444337667:web:d422e51c210db6f26ad236"
+  };
 
-      // Connect Firebase
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-      console.log("Cloud DB Connected Successfully!");
+  let isSyncingFromCloud = false; // রিফ্রেশ লুপ বন্ধের ফ্ল্যাগ
 
-      // ১. ক্লাউডে ডাটা সেভ করার আপগ্রেডেড ফাংশন (Async + Cloud Sync)
-      async function syncDataToCloud() {
-          let allLocalData = {};
-          if (localStorage.length > 0) {
-              for (let i = 0; i < localStorage.length; i++) {
-                  let key = localStorage.key(i);
-                  allLocalData[key] = localStorage.getItem(key);
-              }
+  // ১. ক্লাউডে ডাটা সেভ করার ফাংশন
+  async function syncDataToCloud() {
+    if (isSyncingFromCloud) return;
 
-              try {
-                  await db.collection("sps_school_db").doc("master_data").set({
-                      store: allLocalData,
-                      lastUpdated: new Date().toISOString()
-                  });
-                  console.log("✅ সব ডাটা সফলভাবে গুগল ক্লাউডে সিঙ্ক হয়েছে!");
-                  return true;
-              } catch (error) {
-                  console.error("❌ ক্লাউডে ডাটা সেভ হতে ব্যর্থ হয়েছে:", error);
-                  alert("ডাটা ক্লাউডে সেভ হয়নি! Error: " + error.message);
-                  return false;
-              }
-          }
+    let allLocalData = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      let key = localStorage.key(i);
+      allLocalData[key] = localStorage.getItem(key);
+    }
+
+    try {
+      await db.collection("sps_school_db").doc("master_data").set({
+        store: allLocalData,
+        lastUpdated: new Date().toISOString()
+      });
+      console.log("✅ সব ডাটা সফলভাবে গুগল ক্লাউডে সিঙ্ক হয়েছে!");
+      return true;
+    } catch (error) {
+      console.error("❌ ক্লাউডে ডাটা সেভ হতে ব্যর্থ হয়েছে:", error);
+      alert("ডাটা সেভ হয়নি! Firebase Console-এ Rules চেক করুন।");
+      return false;
+    }
+  }
+
+  // ২. ক্লাউড থেকে ডাটা এলে LocalStorage আপডেট (লুপ ও রিফ্রেশ ছাড়া)
+  db.collection("sps_school_db").doc("master_data").onSnapshot((doc) => {
+    if (doc.exists && doc.data().store) {
+      isSyncingFromCloud = true;
+      let cloudStore = doc.data().store;
+
+      for (let key in cloudStore) {
+        localStorage.setItem(key, cloudStore[key]);
       }
 
-      // ২. ক্লাউড থেকে ডাটা এলে LocalStorage আপডেট ও স্ক্রিন অটো-রিফ্রেশ
-      db.collection("sps_school_db").doc("master_data").onSnapshot((doc) => {
-          if (doc.exists) {
-              let cloudStore = doc.data().store;
-              let shouldReload = false;
+      isSyncingFromCloud = false;
 
-              for (let key in cloudStore) {
-                  if (localStorage.getItem(key) !== cloudStore[key]) {
-                      localStorage.setItem(key, cloudStore[key]);
-                      shouldReload = true;
-                  }
-              }
-
-              if (shouldReload) {
-                  console.log("নতুন ডাটা পাওয়া গেছে, স্ক্রিন রিফ্রেশ হচ্ছে...");
-                  setTimeout(() => {
-                      location.reload();
-                  }, 300);
-              }
-          }
-      }, (error) => {
-          console.error("❌ ডাটাবেস থেকে ডাটা পড়তে সমস্যা হয়েছে:", error);
-      });
-    </script>
-    <!-- Google Firebase Cloud Database END -->
-
-    <style>
+      // ডাটা পাওয়ার পর UI আপডেট ফাংশন কল (যদি থাকে)
+      if (typeof loadPortalData === "function") {
+        loadPortalData();
+      }
+    }
+  }, (error) => {
+    console.error("❌ ডাটাবেস থেকে ডাটা পড়তে সমস্যা হয়েছে:", error);
+  });
+</script>
+<!-- Google Firebase Cloud Database END -->
+	<style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9;
@@ -273,7 +268,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-800 flex flex-col"><body class="min-h-screen text-slate-800 flex flex-col">
+<body class="min-h-screen text-slate-800 flex flex-col">
     <!-- LOGIN SCREEN FOR SECURITY ENTRY -->
     <div id="loginScreen" class="fixed inset-0 bg-indigo-950 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 text-center border-t-8 border-amber-500">
