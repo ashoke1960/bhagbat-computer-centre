@@ -869,19 +869,18 @@
 
                 <div class="p-6">
                     <div class="overflow-x-auto border border-slate-200 rounded-lg">
-
-<!-- 💥 ভাসমান (Sticky) সেভ বাটন বার 💥 -->
-<div style="position: sticky; top: 10px; z-index: 50;" class="bg-white/95 backdrop-blur-md border border-slate-300 shadow-md p-3 rounded-xl mb-4 flex items-center justify-between">
-    <div class="flex items-center gap-2">
+<!-- 💥 কেবল Marks Entry Portal-এ দেখানোর জন্য ভাসমান সেভ বাটন 💥 -->
+<div style="position: fixed; top: 20px; right: 25px; z-index: 9999;" class="bg-slate-900/95 backdrop-blur-md border border-emerald-500/50 shadow-2xl p-2.5 rounded-2xl flex items-center gap-3">
+    <div class="flex items-center gap-2 pl-2">
         <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
-        <span class="text-xs font-bold text-slate-700">Marks Entry Control</span>
+        <span class="text-xs font-bold text-white hidden sm:inline">Marks Entry</span>
     </div>
-    <button type="button" onclick="saveEnteredMarks()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-5 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 active:scale-95">
+    <button type="button" onclick="saveEnteredMarks()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 active:scale-95">
         <i class="fa-solid fa-floppy-disk text-base"></i>
         <span>Commit & Save Marks Record</span>
     </button>
 </div>
-						
+	
                         <table class="w-full text-left border-collapse text-xs">
                             <thead class="bg-slate-50 text-slate-700 uppercase text-[11px]">
                                 <tr class="divide-x divide-slate-200">
@@ -3166,16 +3165,5 @@ grandTotalMaxPossible += totalMaxPossible;
             }
         });
     </script>
-	<!-- 💥 স্ক্রিনের উপরের ডানদিকে ভাসমান (Top-Right Fixed Floating) সেভ বাটন 💥 -->
-<div style="position: fixed; top: 20px; right: 25px; z-index: 9999;" class="bg-slate-900/90 backdrop-blur-md border border-emerald-500/40 shadow-2xl p-2.5 rounded-2xl flex items-center gap-3">
-    <div class="flex items-center gap-2 pl-2">
-        <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
-        <span class="text-xs font-bold text-white hidden sm:inline">Marks Entry</span>
-    </div>
-    <button type="button" onclick="saveEnteredMarks()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-4 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 active:scale-95">
-        <i class="fa-solid fa-floppy-disk text-base"></i>
-        <span>Commit & Save Marks Record</span>
-    </button>
-</div>
- </body>
+</body>
 </html>
