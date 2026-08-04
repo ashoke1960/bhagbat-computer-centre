@@ -1879,58 +1879,59 @@ function printReportCard() {
             if (gradeCell) gradeCell.innerText = grade;
         }
 
-        function saveEnteredMarks(showAlert = true) {
-            const targetSession = document.getElementById('marksSession').value;
-            const targetClass = document.getElementById('marksClass').value;
-            const targetSection = document.getElementById('marksSection').value;
-            const targetExam = document.getElementById('marksExam').value;
-            const targetSubject = document.getElementById('marksSubject').value;
-            
-            const currentWrittenMax = parseInt(document.getElementById('gFM_Written').value) || 0;
-            const currentPracticalMax = parseInt(document.getElementById('gFM_Practical').value) || 0;
+function saveEnteredMarks(showAlert = true) {
+    const targetSession = document.getElementById('marksSession').value;
+    const targetClass = document.getElementById('marksClass').value;
+    const targetSection = document.getElementById('marksSection').value;
+    const targetExam = document.getElementById('marksExam').value;
+    const targetSubject = document.getElementById('marksSubject').value;
+    
+    const currentWrittenMax = parseInt(document.getElementById('gFM_Written').value) || 0;
+    const currentPracticalMax = parseInt(document.getElementById('gFM_Practical').value) || 0;
 
-            const rows = document.querySelectorAll(`#marksGridTableBody tr[id^="row_"]`);
-            let hasValidationError = false;
+    const rows = document.querySelectorAll(`#marksGridTableBody tr[id^="row_"]`);
+    let hasValidationError = false;
 
-            rows.forEach(row => {
-                const written = parseFloat(row.querySelector('.written-input').value) || 0;
-                const practical = parseFloat(row.querySelector('.practical-input').value) || 0;
-                const subEnrich = parseFloat(row.querySelector('.subenrich-input').value) || 0;
-                const copySub = parseFloat(row.querySelector('.copysub-input').value) || 0;
+    rows.forEach(row => {
+        const written = parseFloat(row.querySelector('.written-input').value) || 0;
+        const practical = parseFloat(row.querySelector('.practical-input').value) || 0;
+        const subEnrich = parseFloat(row.querySelector('.subenrich-input').value) || 0;
+        const copySub = parseFloat(row.querySelector('.copysub-input').value) || 0;
 
-                if (written > currentWrittenMax || practical > currentPracticalMax || subEnrich > 5 || copySub > 5) {
-                    hasValidationError = true;
-                    row.style.backgroundColor = "#fef2f2";
-                } else {
-                    row.style.backgroundColor = "";
-                }
-            });
-
-            if (hasValidationError) {
-                alert("ভুল ইনপুট! সর্বোচ্চ মার্কসের চেয়ে বেশি নম্বর দেওয়া আছে। লাল চিহ্নিত সারিগুলো চেক করুন।");
-                return;
-            }
-
-            const dbKey = `${targetSession}_${targetClass}_${targetSection}_${targetExam}_${targetSubject}`;
-            if (!marksDb[dbKey]) marksDb[dbKey] = {};
-            
-            rows.forEach(row => {
-                const studentId = row.id.replace('row_', '');
-                const written = parseFloat(row.querySelector('.written-input').value) || 0;
-                const practical = parseFloat(row.querySelector('.practical-input').value) || 0;
-                const subEnrich = parseFloat(row.querySelector('.subenrich-input').value) || 0;
-                const copySub = parseFloat(row.querySelector('.copysub-input').value) || 0;
-                
-                marksDb[dbKey][studentId] = { th: written, pr: practical, subEnrich: subEnrich, copySub: copySub };
-            });
-            
-            localStorage.setItem('school_management_marksDb', JSON.stringify(marksDb));
-            syncStatistics();
-            
-            if (showAlert) {
-                showToast("Saved Permanently", `Marks stored successfully for ${targetClass}.`, "success");
-            }
+        if (written > currentWrittenMax || practical > currentPracticalMax || subEnrich > 5 || copySub > 5) {
+            hasValidationError = true;
+            row.style.backgroundColor = "#fef2f2";
+        } else {
+            row.style.backgroundColor = "";
         }
+    });
+
+    if (hasValidationError) {
+        alert("ভুল ইনপুট! সর্বোচ্চ মার্কসের চেয়ে বেশি নম্বর দেওয়া আছে। লাল চিহ্নিত সারিগুলো চেক করুন।");
+        return;
+    }
+
+    const dbKey = `${targetSession}_${targetClass}_${targetSection}_${targetExam}_${targetSubject}`;
+    if (!marksDb[dbKey]) marksDb[dbKey] = {};
+    
+    rows.forEach(row => {
+        const studentId = row.id.replace('row_', '');
+        const written = parseFloat(row.querySelector('.written-input').value) || 0;
+        const practical = parseFloat(row.querySelector('.practical-input').value) || 0;
+        const subEnrich = parseFloat(row.querySelector('.subenrich-input').value) || 0;
+        const copySub = parseFloat(row.querySelector('.copysub-input').value) || 0;
+        
+        marksDb[dbKey][studentId] = { th: written, pr: practical, subEnrich: subEnrich, copySub: copySub };
+    });
+    
+    // 💥 মূল সমাধান: LocalStorage ও Firebase Cloud সিঙ্ক একযোগে চালুকরণ
+    saveToLocalStorage();
+    syncStatistics();
+    
+    if (showAlert) {
+        showToast("Saved Permanently", `Marks stored successfully for ${targetClass}.`, "success");
+    }
+}
 
         function populateReportStudentsDropdown() {
             const rClass = document.getElementById('reportClass').value;
