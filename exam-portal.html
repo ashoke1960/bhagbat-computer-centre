@@ -30,7 +30,6 @@
     appId: "1:627444337667:web:d422e51c210db6f26ad236"
   };
 
-  // Connect Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
@@ -62,21 +61,56 @@
     }
   }
 
-  // ২. ক্লাউড থেকে ডাটা এলে LocalStorage আপডেট (লুপ ও রিফ্রেশ ছাড়া)
+  // ২. ক্লাউড থেকে ডাটা এলে LocalStorage, RAM মেমোরি ও UI টেবিল অটো-আপডেট
   db.collection("sps_school_db").doc("master_data").onSnapshot((doc) => {
     if (doc.exists && doc.data().store) {
       isSyncingFromCloud = true;
       let cloudStore = doc.data().store;
 
+      // ক. LocalStorage আপডেট
       for (let key in cloudStore) {
         localStorage.setItem(key, cloudStore[key]);
       }
 
-      isSyncingFromCloud = false;
-
-      if (typeof loadPortalData === "function") {
-        loadPortalData();
+      // খ. JavaScript RAM মেমোরি (Variables) রিলোড
+      try {
+        if (localStorage.getItem('school_management_adminPassword')) {
+          adminMasterPassword = localStorage.getItem('school_management_adminPassword');
+        }
+        if (localStorage.getItem('school_management_teachersDb')) {
+          teachersDb = JSON.parse(localStorage.getItem('school_management_teachersDb')) || [];
+        }
+        if (localStorage.getItem('school_management_studentsDb')) {
+          studentsDb = JSON.parse(localStorage.getItem('school_management_studentsDb')) || [];
+        }
+        if (localStorage.getItem('school_management_marksDb')) {
+          marksDb = JSON.parse(localStorage.getItem('school_management_marksDb')) || {};
+        }
+        if (localStorage.getItem('school_management_logoBase64')) {
+          schoolLogoBase64 = localStorage.getItem('school_management_logoBase64') || "";
+        }
+        if (localStorage.getItem('school_management_bannerBase64')) {
+          schoolBannerBase64 = localStorage.getItem('school_management_bannerBase64') || "";
+        }
+        if (localStorage.getItem('school_management_signaturesDb')) {
+          signaturesDb = JSON.parse(localStorage.getItem('school_management_signaturesDb')) || {};
+        }
+      } catch(e) {
+        console.error("RAM variable reload error:", e);
       }
+
+      // গ. স্ক্রিনের সব টেবিল ও ভিউ আপডেট
+      if (typeof syncStatistics === 'function') syncStatistics();
+      if (typeof populateTeacherAssignmentsTable === 'function') populateTeacherAssignmentsTable();
+      if (typeof populateStudentRegistryTable === 'function') populateStudentRegistryTable();
+      if (typeof loadClassSubjectList === 'function') loadClassSubjectList();
+      if (typeof loadStudentMarksEntry === 'function') loadStudentMarksEntry();
+      if (typeof renderGlobalLogoElements === 'function') renderGlobalLogoElements();
+      if (typeof renderSignaturePreviews === 'function') renderSignaturePreviews();
+      if (typeof renderBannerPreview === 'function') renderBannerPreview();
+
+      isSyncingFromCloud = false;
+      console.log("🔄 ক্লাউডের ডাটা দিয়ে লাইভ স্ক্রিন আপডেট হয়েছে!");
     }
   }, (error) => {
     console.error("❌ ডাটাবেস থেকে ডাটা পড়তে সমস্যা হয়েছে:", error);
