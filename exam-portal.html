@@ -2273,159 +2273,289 @@ if (cleanName && !isNaN(percentNum)) {
                 activeLanguageSub = "HINDI(085)";
             }
 
-// ১. সায়েন্স (SCIENCE) গ্রুপ প্রসেসিং (Class 9 & 10)
-        if (sub.name.toUpperCase().includes("SCI") && !sub.name.toUpperCase().includes("SOCIAL") && !sub.name.toUpperCase().includes("SSC") && !sub.name.toUpperCase().includes("SST")) {
-            groupSubs = subs.filter(s => s.name.toUpperCase().includes("SCI") && !s.name.toUpperCase().includes("SOCIAL") && !s.name.toUpperCase().includes("SSC") && !s.name.toUpperCase().includes("SST"));
-            
-            if (isHighSchool && groupSubs.length > 1) {
-                if (!groupSubs.some(s => hasEntry(s.name))) return;
-                isGroup = true;
-                currentThFM = isBigExam ? 120 : 60; // Big Exam: 3x40=120, PT: 3x20=60
-                currentPrFM = isBigExam ? (sub.prFM || 20) : 0;
-                
-                let totalSubEnrich = 0, totalCopySub = 0;
-                let groupRowsHtml = '';
+subs.forEach(sub => {
+                if (processedSubjects.has(sub.name)) return;
 
-                groupSubs.forEach(s => {
-                    const data = getScoreData(s.name);
-                    finalTh += parseScore(data.th);
-                    finalPr += parseScore(data.pr);
-                    totalSubEnrich += parseScore(data.subEnrich);
-                    totalCopySub += parseScore(data.copySub);
-                    processedSubjects.add(s.name);
+                // ==========================================
+                // ল্যাঙ্গুয়েজ ফিল্টার (বাংলা/হিন্দি ফিল্টারিং)
+                // ==========================================
+                const isBengali = sub.name.toUpperCase().includes("BENGALI");
+                const isHindi = sub.name.toUpperCase().includes("HINDI");
 
-                    const sLabel = s.name.split(':')[1] || s.name;
-                    const maxPerSub = isBigExam ? 40 : 20;
-                    groupRowsHtml += `<div class="flex justify-between border-b border-slate-200/50 last:border-none px-1"><span>${sLabel} (${maxPerSub})</span> <span class="font-bold">${parseScore(data.th)}</span></div>`;
-                });
-
-                finalSubEnrich = totalSubEnrich / groupSubs.length;
-                finalCopySub = totalCopySub / groupSubs.length;
-                
-                displayName = `
-                    <div class="flex flex-col text-left">
-                        <span class="font-bold">Science (086)</span>
-                        <div class="mt-1 text-[10px] font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded p-1 space-y-0.5">${groupRowsHtml}</div>
-                    </div>`;
-            }
-        } 
-        // ২. সোশ্যাল সায়েন্স (SOCIAL SCIENCE / SSC) গ্রুপ প্রসেসিং (Class 9 & 10)
-        else if (sub.name.toUpperCase().includes("SOCIAL") || sub.name.toUpperCase().includes("SSC") || sub.name.toUpperCase().includes("SST")) {
-            groupSubs = subs.filter(s => s.name.toUpperCase().includes("SOCIAL") || s.name.toUpperCase().includes("SSC") || s.name.toUpperCase().includes("SST"));
-            
-            if (isHighSchool && groupSubs.length > 1) {
-                if (!groupSubs.some(s => hasEntry(s.name))) return;
-                isGroup = true;
-                currentThFM = isBigExam ? 160 : 80; // Big Exam: 4x40=160, PT: 4x20=80
-                currentPrFM = isBigExam ? (sub.prFM || 20) : 0;
-                
-                let totalSubEnrich = 0, totalCopySub = 0;
-                let groupRowsHtml = '';
-
-                groupSubs.forEach(s => {
-                    const data = getScoreData(s.name);
-                    finalTh += parseScore(data.th);
-                    finalPr += parseScore(data.pr);
-                    totalSubEnrich += parseScore(data.subEnrich);
-                    totalCopySub += parseScore(data.copySub);
-                    processedSubjects.add(s.name);
-
-                    const sLabel = s.name.split(':')[1] || s.name;
-                    const maxPerSub = isBigExam ? 40 : 20;
-                    groupRowsHtml += `<div class="flex justify-between border-b border-slate-200/50 last:border-none px-1"><span>${sLabel} (${maxPerSub})</span> <span class="font-bold">${parseScore(data.th)}</span></div>`;
-                });
-
-                finalSubEnrich = totalSubEnrich / groupSubs.length;
-                finalCopySub = totalCopySub / groupSubs.length;
-                
-                displayName = `
-                    <div class="flex flex-col text-left">
-                        <span class="font-bold">Social Science (087)</span>
-                        <div class="mt-1 text-[10px] font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded p-1 space-y-0.5">${groupRowsHtml}</div>
-                    </div>`;
-            }
-        }
-
-        // ৩. সিঙ্গেল সাবজেক্ট হলে ডেটা লোড
-        if (!isGroup) {
-            if (!hasEntry(sub.name)) return;
-            const data = getScoreData(sub.name);
-            finalTh = parseScore(data.th);
-            finalPr = parseScore(data.pr);
-            finalSubEnrich = parseScore(data.subEnrich);
-            finalCopySub = parseScore(data.copySub);
-            processedSubjects.add(sub.name);
-        }
-
-        // ৪. ক্যালকুলেশন ও ওয়েটেজ লজিক
-        let subjectTotalObtained = 0;
-        let subjectMaxPossible = 0;
-        let thWeightageDisplay = "-";
-
-        if (isBigExam) {
-            // Half Yearly / Annual Exams
-            let convertedTh = finalTh;
-
-            if (isGroup && isHighSchool) {
-                if (currentThFM === 120) {
-                    // Science: (Physics + Chem + Bio) / 3 * 2  ==> (120 থেকে 80-এ রূপান্তর)
-                    convertedTh = (finalTh / 3) * 2;
-                } else if (currentThFM === 160) {
-                    // Social Science: (Hist + Geo + Pol + Eco) / 2 ==> (160 থেকে 80-এ রূপান্তর)
-                    convertedTh = finalTh / 2;
+                if (isBengali || isHindi) {
+                    // শিক্ষক যদি সক্রিয় ভাষার বাইরে অন্য বিষয়টি ইনপুট না দেন বা ০ রাখেন, তবে তা স্কিপ হবে
+                    if (activeLanguageSub && sub.name !== activeLanguageSub) {
+                        return; // মার্কশীটে শো করবে না এবং % হিসাব হবে না
+                    }
+                    if (!hasEntry(sub.name)) {
+                        return;
+                    }
                 }
-            }
 
-            convertedTh = Math.round(convertedTh * 100) / 100;
-            
-            // থিওরি (৮০) + প্র্যাকটিক্যাল/ইন্টারনাল (২০) = সর্বমোট ১০০
-            subjectTotalObtained = convertedTh + finalPr;
-            
-            let effectiveThFM = (isGroup && isHighSchool) ? 80 : currentThFM;
-            subjectMaxPossible = effectiveThFM + currentPrFM;
-        } else {
-            // PT-1 / PT-2 (Periodic Tests)
-            // Science: (Obtained / 60) * 10 = Obtained / 6
-            // Social Science: (Obtained / 80) * 10 = Obtained / 8
-            let thWeightage = currentThFM > 0 ? (finalTh / currentThFM) * 10 : 0;
-            thWeightage = Math.round(thWeightage * 100) / 100;
-            thWeightageDisplay = thWeightage;
+                let displayName = sub.name;
+                let finalTh = 0; 
+                let finalPr = 0;
+                let finalSubEnrich = 0; 
+                let finalCopySub = 0;
+                let currentThFM = sub.thFM; 
+                let currentPrFM = sub.prFM;
+                let groupSubs = [];
+                let isGroup = false;
+                let subjectType = "SINGLE"; 
 
-            // ১০ (ওয়েটেজ) + ৫ (সাবজেক্ট এনরিচমেন্ট) + ৫ (নোটবুক) = সর্বমোট ২০
-            subjectTotalObtained = thWeightage + finalSubEnrich + finalCopySub;
-            subjectMaxPossible = 20;
-        }
+// ==========================================
+                // ১. ক্লাস ক্যাটাগরি চেনার লজিক (সংশোধিত)
+                // ==========================================
+                const clsUpper = student.className.toUpperCase();
+                
+                // IX to XII এর জন্য HighSchool
+                const isHighSchool = clsUpper.includes("IX") || clsUpper.includes("X") || clsUpper.includes("XI") || clsUpper.includes("XII") || clsUpper.includes("9") || clsUpper.includes("10") || clsUpper.includes("11") || clsUpper.includes("12");
 
-        grandTotalObtained += subjectTotalObtained;
-        grandTotalMaxPossible += subjectMaxPossible;
+                // Class VI to VIII চেনার শর্ত
+                const isMiddleSchool = clsUpper.includes("VI") || clsUpper.includes("VII") || clsUpper.includes("VIII") || clsUpper.includes("6") || clsUpper.includes("7") || clsUpper.includes("8");
 
-        let subPct = subjectMaxPossible > 0 ? (subjectTotalObtained / subjectMaxPossible) * 100 : 0;
-        let subGrade = calculateGradeCBSE(subPct);
+                // ==========================================
+                // ২. সায়েন্স (SCIENCE) প্রসেসিং (সংশোধিত)
+                // ==========================================
+                if (sub.name.toUpperCase().includes("SCI") && !sub.name.toUpperCase().includes("SOCIAL") && !sub.name.toUpperCase().includes("SSC") && !sub.name.toUpperCase().includes("SST")) {
+                    groupSubs = subs.filter(s => s.name.toUpperCase().includes("SCI") && !s.name.toUpperCase().includes("SOCIAL") && !s.name.toUpperCase().includes("SSC") && !s.name.toUpperCase().includes("SST"));
+                    
+                    if (isHighSchool && groupSubs.length > 1) {
+                        // Class 9-12 এর জন্য গ্রুপ (Physics, Chemistry, Biology)
+                        if (!groupSubs.some(s => hasEntry(s.name))) return;
+                        isGroup = true;
+                        subjectType = "SCI";
+                        currentThFM = 60; 
+                        currentPrFM = 0;
+                        
+                        let totalSubEnrich = 0, totalCopySub = 0;
+                        let groupRowsHtml = '';
 
-        // টেবিল রো যুক্তকরণ (আপনার টেবিল ফরম্যাট অনুযায়ী)
-        rowsHtml += isBigExam ? `
-            <tr class="border-b border-slate-200 text-xs text-center">
-                <td class="p-2 border-r border-slate-300 text-left">${displayName}</td>
-                <td class="p-2 border-r border-slate-200 text-amber-800 font-bold">-</td>
-                <td class="p-2 border-r border-slate-100">${finalTh} / ${currentThFM}</td>
-                <td class="p-2 border-r border-slate-100">${finalPr}</td>
-                <td class="p-2 border-r border-slate-200 font-bold">${subjectTotalObtained.toFixed(1)} / ${subjectMaxPossible}</td>
-                <td class="p-2 border-r border-slate-200 font-bold text-blue-800">${subPct.toFixed(0)}%</td>
-                <td class="p-2 border-r border-slate-200 font-extrabold text-indigo-950">${subGrade}</td>
-            </tr>
-        ` : `
-            <tr class="border-b border-slate-200 text-xs text-center">
-                <td class="p-2 border-r border-slate-300 text-left">${displayName}</td>
-                <td class="p-2 border-r border-slate-100 font-bold">${finalTh} / ${currentThFM}</td>
-                <td class="p-2 border-r border-slate-200 font-bold text-indigo-700">${thWeightageDisplay}</td>
-                <td class="p-2 border-r border-slate-200">${finalSubEnrich}</td>
-                <td class="p-2 border-r border-slate-200">${finalCopySub}</td>
-                <td class="p-2 border-r border-slate-200 font-bold">${subjectTotalObtained.toFixed(1)} / ${subjectMaxPossible}</td>
-                <td class="p-2 border-r border-slate-200 font-bold text-blue-800">${subPct.toFixed(0)}%</td>
-                <td class="p-2 border-r border-slate-200 font-extrabold text-indigo-950">${subGrade}</td>
-            </tr>
-        `;
-    });
+                        groupSubs.forEach(s => {
+                            const data = getScoreData(s.name);
+                            finalTh += parseScore(data.th);
+                            finalPr += parseScore(data.pr);
+                            totalSubEnrich += parseScore(data.subEnrich);
+                            totalCopySub += parseScore(data.copySub);
+                            processedSubjects.add(s.name);
+
+                            const sLabel = s.name.split(':')[1] || s.name;
+                            groupRowsHtml += `<div class="flex justify-between border-b border-slate-200/50 last:border-none px-1"><span>${sLabel} (20)</span> <span class="font-bold">${parseScore(data.th)}</span></div>`;
+                        });
+
+                        finalSubEnrich = totalSubEnrich / groupSubs.length;
+                        finalCopySub = totalCopySub / groupSubs.length;
+                        
+                        displayName = `
+                            <div class="flex flex-col">
+                                <span class="font-bold">Science (086)</span>
+                                <div class="mt-1 text-[10px] font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded p-1 space-y-0.5">${groupRowsHtml}</div>
+                            </div>`;
+                    } else {
+                        // Class 1 to 8 এর জন্য একক সায়েন্স সাবজেক্ট (কোনো সাব-পার্ট থাকবে না)
+                        if (!hasEntry(sub.name)) return;
+                        const data = getScoreData(sub.name);
+                        finalTh = parseScore(data.th);
+                        finalPr = parseScore(data.pr);
+                        finalSubEnrich = parseScore(data.subEnrich);
+                        finalCopySub = parseScore(data.copySub);
+
+                        subjectType = "SINGLE";
+                        currentThFM = parseInt(document.getElementById('gFM_Written')?.value) || 20;
+                        currentPrFM = 0;
+                        displayName = `<span class="font-bold">${sub.name}</span>`;
+                        processedSubjects.add(sub.name);
+                    }
+                }
+                // ==========================================
+                // ৩. সোশ্যাল সায়েন্স (SOCIAL SCIENCE / SSC) প্রসেসিং (সংশোধিত)
+                // ==========================================
+                else if (sub.name.toUpperCase().includes("SSC") || sub.name.toUpperCase().includes("SST") || sub.name.toUpperCase().includes("SOCIAL")) {
+                    groupSubs = subs.filter(s => s.name.toUpperCase().includes("SSC") || s.name.toUpperCase().includes("SST") || s.name.toUpperCase().includes("SOCIAL"));
+                    if (!groupSubs.some(s => hasEntry(s.name))) return;
+
+                    if ((isHighSchool || isMiddleSchool) && groupSubs.length > 1) {
+                        // Class 6-8 (3 Parts) এবং Class 9-10 (4 Parts) উভয় ক্ষেত্রই এখানে জেনারেট হবে
+                        isGroup = true;
+                        subjectType = "SSC";
+                        
+                        let totalSubEnrich = 0, totalCopySub = 0;
+                        let groupRowsHtml = '';
+
+                        groupSubs.forEach(s => {
+                            const data = getScoreData(s.name);
+                            finalTh += parseScore(data.th);
+                            finalPr += parseScore(data.pr);
+                            totalSubEnrich += parseScore(data.subEnrich);
+                            totalCopySub += parseScore(data.copySub);
+                            processedSubjects.add(s.name);
+
+                            const sLabel = s.name.split(':')[1] || s.name;
+                            groupRowsHtml += `<div class="flex justify-between border-b border-slate-200/50 last:border-none px-1"><span>${sLabel} (20)</span> <span class="font-bold">${parseScore(data.th)}</span></div>`;
+                        });
+
+                        currentThFM = groupSubs.length * 20; // Class VI-VIII এর জন্য ৩*২০ = ৬০, Class IX এর জন্য ৪*২০ = ৮০
+                        currentPrFM = 0;
+
+                        // গড় মান নির্ণয় ( Average Sub Enrich & Copy Sub )
+                        finalSubEnrich = totalSubEnrich / groupSubs.length;
+                        finalCopySub = totalCopySub / groupSubs.length;
+
+                        const titleText = isHighSchool ? "Social Science (087)" : "Social Science (SSC)";
+
+                        displayName = `
+                            <div class="flex flex-col">
+                                <span class="font-bold">${titleText}</span>
+                                <div class="mt-1 text-[10px] font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded p-1 space-y-0.5">${groupRowsHtml}</div>
+                            </div>`;
+                    } else {
+                        // Class 1 to 5 এর জন্য
+                        if (!hasEntry(sub.name)) return;
+                        const data = getScoreData(sub.name);
+                        finalTh = parseScore(data.th);
+                        finalPr = parseScore(data.pr);
+                        finalSubEnrich = parseScore(data.subEnrich);
+                        finalCopySub = parseScore(data.copySub);
+
+                        subjectType = "SINGLE";
+                        currentThFM = parseInt(document.getElementById('gFM_Written')?.value) || 20;
+                        currentPrFM = 0;
+                        displayName = `<span class="font-bold">${sub.name}</span>`;
+                        processedSubjects.add(sub.name);
+                    }
+                }
+                // ==========================================
+                // ৪. কম্পিউটার ও অন্যান্য সাধারণ সাবজেক্ট
+                // ==========================================
+                else {
+                    if (!hasEntry(sub.name)) return;
+                    const data = getScoreData(sub.name);
+                    finalTh = parseScore(data.th);
+                    finalPr = parseScore(data.pr);
+                    finalSubEnrich = parseScore(data.subEnrich);
+                    finalCopySub = parseScore(data.copySub);
+                    
+                    const isCompOrIT = sub.name.toUpperCase().includes("COMPUTER") || sub.name.toUpperCase().includes("INFORMATION TECHNOLOGY") || sub.name.toUpperCase().includes("IT");
+
+                    if (isCompOrIT) {
+                        subjectType = "IT";
+                        currentThFM = isHighSchool ? 20 : (parseInt(document.getElementById('gFM_Written')?.value) || 30);
+                        currentPrFM = isHighSchool ? 20 : (parseInt(document.getElementById('gFM_Practical')?.value) || 10);
+                        
+                        const titleText = isHighSchool ? "INFORMATION TECHNOLOGY (402)" : "COMPUTER";
+
+                        // ব্র্যাকেটের ফুল মার্কস (40), (10) মুছে দিয়ে শুধুমাত্র Th এবং Pr রাখা হলো
+                        displayName = `
+                            <div class="flex flex-col">
+                                <span class="font-bold">${titleText}</span>
+                                <div class="mt-1 text-[10px] font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded p-1 space-y-0.5">
+                                    <div class="flex justify-between border-b border-slate-200/50"><span>Th</span><span class="font-bold">${finalTh}</span></div>
+                                    <div class="flex justify-between"><span>Pr</span><span class="font-bold">${finalPr}</span></div>
+                                </div>
+                            </div>`;
+                    } else {
+                        subjectType = "SINGLE";
+                        currentThFM = parseInt(document.getElementById('gFM_Written')?.value) || 40;
+                        currentPrFM = parseInt(document.getElementById('gFM_Practical')?.value) || 0;
+                        displayName = `<span class="font-bold">${sub.name}</span>`;
+                    }
+                    processedSubjects.add(sub.name);
+                }
+
+                let totalMaxFM = currentThFM + currentPrFM;
+                let ptWeightage = 0;
+                
+              if (subjectType === "SCI") {
+    // Class IX-X হলে ৬ দিয়ে ভাগ, কিন্তু Class I-VIII (একক বিষয়) হলে ২ দিয়ে ভাগ হবে (২০/২ = ১০)
+    ptWeightage = isGroup ? (finalTh / 6) : ((finalTh + finalPr) / 2); 
+} else if (subjectType === "SSC") {
+    ptWeightage = isHighSchool ? (finalTh / 8) : (finalTh / 6); 
+} else if (subjectType === "IT") {
+    ptWeightage = (finalTh + finalPr) / 4; 
+} else {
+    // Class 1 to 8 এর যেকোনো একক বিষয়ের প্রাপ্ত নম্বরকে ২০ দিয়ে ভাগ করে ১০ দিয়ে গুণ (অর্থাৎ ২ দিয়ে ভাগ)
+    const baseFM = totalMaxFM > 0 ? totalMaxFM : 20;
+    ptWeightage = ((finalTh + finalPr) / baseFM) * 10; 
+}
+                
+                ptWeightage = Math.round(ptWeightage * 100) / 100;
+
+                let total = 0;
+                let totalMaxPossible = 0;
+                let internalColumnHtml = '';
+
+if (isBigExam) {
+    // ১. ইন্টারনাল এ্যাসেসমেন্ট (PT-1 + Sub Enrich + Copy Sub = Max 20)
+    const internalTotal20 = Math.min(20, ptWeightage + finalSubEnrich + finalCopySub);
+    
+    // ২. মোট প্রাপ্ত নম্বর (ইন্টারনাল ২০ + লিখিত/প্র্যাকটিক্যাল)
+    total = internalTotal20 + finalTh + finalPr;
+    
+    // ৩. হাফ ইয়ার্লি বা এনুয়ালে মোট ফুল মার্কস সবসময় ১০০ হবে
+    totalMaxPossible = 100;
+
+    // প্র্যাকটিক্যাল নম্বর থাকলে পিঙ্ক ব্যাকগ্রাউন্ড ও গাঢ় নীল টেক্সট, না থাকলে ধূসর N/A
+    const prBgStyle = currentPrFM > 0 
+        ? 'background-color: #fdf2f8; color: #1e3a8a; font-weight: bold; -webkit-print-color-adjust: exact; print-color-adjust: exact;' 
+        : '';
+        
+    const prClass = currentPrFM > 0 
+        ? 'p-2 border-r border-slate-100 font-bold text-blue-900 bg-pink-50' 
+        : 'p-2 border-r border-slate-100 text-slate-400';
+
+    internalColumnHtml = `
+        <td class="p-2 border-r border-slate-200 font-bold text-amber-800">${internalTotal20.toFixed(1)} / 20</td>
+        
+        <!-- থিওরি/লিখিত মার্কস (গাঢ় নীল টেক্সট ও হালকা পিঙ্ক ব্যাকগ্রাউন্ড) -->
+        <td class="p-2 border-r border-slate-100 font-bold text-blue-900 bg-pink-50" 
+            style="background-color: #fdf2f8; color: #1e3a8a; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+            ${finalTh}
+        </td>
+        
+        <!-- প্র্যাকটিক্যাল মার্কস (থিওরির মতোই গাঢ় নীল টেক্সট ও হালকা পিঙ্ক ব্যাকগ্রাউন্ড) -->
+        <td class="${prClass}" style="${prBgStyle}">
+            ${currentPrFM === 0 ? 'N/A' : finalPr}
+        </td>
+    `;
+} else {
+                    total = ptWeightage + finalSubEnrich + finalCopySub;
+                    totalMaxPossible = 20;
+
+                    let marksObtainedDisplay = '';
+                    if (subjectType === "IT") {
+                        marksObtainedDisplay = `${finalTh + finalPr}`;
+                    } else if (isGroup) {
+                        if (subjectType === "SCI") marksObtainedDisplay = `${finalTh}`;
+                        else marksObtainedDisplay = `${finalTh}`; 
+                    } else {
+                        marksObtainedDisplay = finalTh;
+                    }
+
+                    internalColumnHtml = `
+                        <td class="p-2 border-r border-slate-100 font-bold text-slate-800">${marksObtainedDisplay}</td>
+                        <td class="p-2 border-r border-slate-200 font-bold text-indigo-600">${ptWeightage.toFixed(1)}</td>
+                        <td class="p-2 border-r border-slate-200">${finalSubEnrich.toFixed(1)}</td>
+                        <td class="p-2 border-r border-slate-200">${finalCopySub.toFixed(1)}</td>
+                    `;
+                }
+
+                const pct = totalMaxPossible > 0 ? (total / totalMaxPossible) * 100 : 0;
+                const grade = calculateGradeCBSE(pct);
+
+                // যেকোনো শর্ত ছাড়াই প্রতিটি সাবজেক্টের জন্য মার্কস ও ফুল মার্কস সরাসরি যোগ হবে
+grandTotalObtained += total;
+grandTotalMaxPossible += totalMaxPossible;
+
+                rowsHtml += `
+                    <tr class="text-center divide-x divide-slate-300 border-b border-slate-300">
+                        <td class="p-2 text-left font-bold text-slate-700 align-middle">${displayName}</td>
+                        ${internalColumnHtml}
+                        <td class="p-2 font-extrabold text-indigo-950 align-middle">${total.toFixed(1)}</td>
+                        <td class="p-2 font-black text-indigo-900 align-middle">${pct.toFixed(0)}%</td>
+                        <td class="p-2 font-bold text-purple-800 align-middle">${grade}</td>
+                    </tr>
+                `;
+            });
 
             if (rowsHtml === '') {
                 rowsHtml = `<tr><td colspan="${isBigExam ? '7' : '8'}" class="p-4 italic text-slate-400 text-center">No exam marks records initialized yet.</td></tr>`;
