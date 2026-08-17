@@ -37,22 +37,44 @@
 
   let isSyncingFromCloud = false;
 
-  // ১. ক্লাউডে ডাটা সেভ করার ফাংশন
+  // ১. ক্লাউডে ডাটা ভাগ করে আলাদা ডকুমেন্টে সেভ করার ফাংশন
   async function syncDataToCloud() {
     if (isSyncingFromCloud) return;
-
-    let allLocalData = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      let key = localStorage.key(i);
-      allLocalData[key] = localStorage.getItem(key);
-    }
-
+	
     try {
-      await db.collection("sps_school_db").doc("master_data").set({
-        store: allLocalData,
+      // ক. শিক্ষক ডাটা (Teachers Registry)
+      await db.collection("sps_school_db").doc("teachers_data").set({
+        teachers: teachersDb,
         lastUpdated: new Date().toISOString()
       });
-      console.log("✅ সব ডাটা সফলভাবে গুগল ক্লাউডে সিঙ্ক হয়েছে!");
+
+      // খ. ছাত্রছাত্রীদের ডাটা (Student Roster)
+      await db.collection("sps_school_db").doc("students_data").set({
+        students: studentsDb,
+        lastUpdated: new Date().toISOString()
+      });
+
+      // গ. পরীক্ষার নম্বর/মার্কস ডাটা (Marks Registry)
+      await db.collection("sps_school_db").doc("marks_data").set({
+        marks: marksDb,
+        lastUpdated: new Date().toISOString()
+      });
+
+      // ঘ. ব্র্যান্ডিং ও ডিজিট্যাল স্বাক্ষর (Logo, Banner & Signatures)
+      await db.collection("sps_school_db").doc("branding_data").set({
+        logo: schoolLogoBase64,
+        banner: schoolBannerBase64,
+        signatures: signaturesDb,
+        lastUpdated: new Date().toISOString()
+      });
+
+      // ঙ. অ্যাডমিন পাসওয়ার্ড ও সিস্টেম সেটিংস (System Settings)
+      await db.collection("sps_school_db").doc("settings_data").set({
+        adminPassword: adminMasterPassword,
+        lastUpdated: new Date().toISOString()
+      });
+
+      console.log("✅ সব ডাটা আলাদা ক্যাটাগরিতে গুগল ক্লাউডে সিঙ্ক হয়েছে!");
       return true;
     } catch (error) {
       console.error("❌ ক্লাউডে ডাটা সেভ হতে ব্যর্থ হয়েছে:", error);
@@ -61,60 +83,70 @@
     }
   }
 
-  // ২. ক্লাউড থেকে ডাটা এলে LocalStorage, RAM মেমোরি ও UI টেবিল অটো-আপডেট
-  db.collection("sps_school_db").doc("master_data").onSnapshot((doc) => {
-    if (doc.exists && doc.data().store) {
-      isSyncingFromCloud = true;
-      let cloudStore = doc.data().store;
+  // ২. লাইভ আপডেট রিসিভ করার আলাদা লিসেনার (Real-time Syncing)
+  isSyncingFromCloud = true;
 
-      // ক. LocalStorage আপডেট
-      for (let key in cloudStore) {
-        localStorage.setItem(key, cloudStore[key]);
-      }
-
-      // খ. JavaScript RAM মেমোরি (Variables) রিলোড
-      try {
-        if (localStorage.getItem('school_management_adminPassword')) {
-          adminMasterPassword = localStorage.getItem('school_management_adminPassword');
-        }
-        if (localStorage.getItem('school_management_teachersDb')) {
-          teachersDb = JSON.parse(localStorage.getItem('school_management_teachersDb')) || [];
-        }
-        if (localStorage.getItem('school_management_studentsDb')) {
-          studentsDb = JSON.parse(localStorage.getItem('school_management_studentsDb')) || [];
-        }
-        if (localStorage.getItem('school_management_marksDb')) {
-          marksDb = JSON.parse(localStorage.getItem('school_management_marksDb')) || {};
-        }
-        if (localStorage.getItem('school_management_logoBase64')) {
-          schoolLogoBase64 = localStorage.getItem('school_management_logoBase64') || "";
-        }
-        if (localStorage.getItem('school_management_bannerBase64')) {
-          schoolBannerBase64 = localStorage.getItem('school_management_bannerBase64') || "";
-        }
-        if (localStorage.getItem('school_management_signaturesDb')) {
-          signaturesDb = JSON.parse(localStorage.getItem('school_management_signaturesDb')) || {};
-        }
-      } catch(e) {
-        console.error("RAM variable reload error:", e);
-      }
-
-      // গ. স্ক্রিনের সব টেবিল ও ভিউ আপডেট
-      if (typeof syncStatistics === 'function') syncStatistics();
+  // ক. Teachers Listener
+  db.collection("sps_school_db").doc("teachers_data").onSnapshot((doc) => {
+    if (doc.exists && doc.data().teachers) {
+      teachersDb = doc.data().teachers;
+      localStorage.setItem('school_management_teachersDb', JSON.stringify(teachersDb));
       if (typeof populateTeacherAssignmentsTable === 'function') populateTeacherAssignmentsTable();
-      if (typeof populateStudentRegistryTable === 'function') populateStudentRegistryTable();
-      if (typeof loadClassSubjectList === 'function') loadClassSubjectList();
-      if (typeof loadStudentMarksEntry === 'function') loadStudentMarksEntry();
-      if (typeof renderGlobalLogoElements === 'function') renderGlobalLogoElements();
-      if (typeof renderSignaturePreviews === 'function') renderSignaturePreviews();
-      if (typeof renderBannerPreview === 'function') renderBannerPreview();
-
-      isSyncingFromCloud = false;
-      console.log("🔄 ক্লাউডের ডাটা দিয়ে লাইভ স্ক্রিন আপডেট হয়েছে!");
+      if (typeof syncStatistics === 'function') syncStatistics();
     }
-  }, (error) => {
-    console.error("❌ ডাটাবেস থেকে ডাটা পড়তে সমস্যা হয়েছে:", error);
   });
+
+  // খ. Students Listener
+  db.collection("sps_school_db").doc("students_data").onSnapshot((doc) => {
+    if (doc.exists && doc.data().students) {
+      studentsDb = doc.data().students;
+      localStorage.setItem('school_management_studentsDb', JSON.stringify(studentsDb));
+      if (typeof populateStudentRegistryTable === 'function') populateStudentRegistryTable();
+      if (typeof syncStatistics === 'function') syncStatistics();
+    }
+  });
+
+  // গ. Marks Listener
+  db.collection("sps_school_db").doc("marks_data").onSnapshot((doc) => {
+    if (doc.exists && doc.data().marks) {
+      marksDb = doc.data().marks;
+      localStorage.setItem('school_management_marksDb', JSON.stringify(marksDb));
+      if (typeof loadStudentMarksEntry === 'function') loadStudentMarksEntry();
+      if (typeof syncStatistics === 'function') syncStatistics();
+    }
+  });
+
+  // ঘ. Branding & Signatures Listener
+  db.collection("sps_school_db").doc("branding_data").onSnapshot((doc) => {
+    if (doc.exists) {
+      const data = doc.data();
+      if (data.logo !== undefined) {
+        schoolLogoBase64 = data.logo;
+        localStorage.setItem('school_management_logoBase64', schoolLogoBase64);
+        if (typeof renderGlobalLogoElements === 'function') renderGlobalLogoElements();
+      }
+      if (data.banner !== undefined) {
+        schoolBannerBase64 = data.banner;
+        localStorage.setItem('school_management_bannerBase64', schoolBannerBase64);
+        if (typeof renderBannerPreview === 'function') renderBannerPreview();
+      }
+      if (data.signatures) {
+        signaturesDb = data.signatures;
+        localStorage.setItem('school_management_signaturesDb', JSON.stringify(signaturesDb));
+        if (typeof renderSignaturePreviews === 'function') renderSignaturePreviews();
+      }
+    }
+  });
+
+  // ঙ. Settings Listener
+  db.collection("sps_school_db").doc("settings_data").onSnapshot((doc) => {
+    if (doc.exists && doc.data().adminPassword) {
+      adminMasterPassword = doc.data().adminPassword;
+      localStorage.setItem('school_management_adminPassword', adminMasterPassword);
+    }
+  });
+
+  isSyncingFromCloud = false;
 </script>
 <!-- Google Firebase Cloud Database END -->
 	<style>
@@ -517,55 +549,70 @@
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full flex flex-col lg:flex-row gap-8 no-print">
         
         <!-- SIDE PANEL NAVIGATION -->
-        <aside id="sidebarPanel" class="w-full lg:w-1/4 flex flex-col gap-4">
-            <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Management Modules</h3>
-                <nav class="flex flex-col gap-2">
-                    <button onclick="switchTab('dashboardTab')" id="btn-dashboardTab" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold bg-indigo-600 text-white shadow-md">
-                        <span><i class="fa-solid fa-chart-line mr-3 text-lg"></i> Control Center</span>
-                        <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
-                    </button>
-                    <button onclick="switchTab('teacherTab')" id="btn-teacherTab" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">
-                        <span><i class="fa-solid fa-user-tie mr-3 text-lg"></i> Teacher Assignments</span>
-                        <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
-                    </button>
-                    <button onclick="switchTab('studentTab')" id="btn-studentTab" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">
-                        <span><i class="fa-solid fa-users mr-3 text-lg"></i> Student Registry</span>
-                        <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
-                    </button>
-                    <button onclick="switchTab('addSubject')" id="btn-addSubject" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">
-                        <span><i class="fa-solid fa-book-bookmark mr-3 text-lg"></i> Subject Entry Portal</span>
-                        <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
-                    </button>
-                    <button onclick="switchTab('marksTab')" id="btn-marksTab" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">
-                        <span><i class="fa-solid fa-file-signature mr-3 text-lg"></i> Marks Entry Portal</span>
-                        <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
-                    </button>
-                    <button onclick="switchTab('reportTab')" id="btn-reportTab" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">
-                        <span><i class="fa-solid fa-graduation-cap mr-3 text-lg"></i> Report Generator</span>
-                        <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
-                    </button>
-                </nav>
-            </div>
+<aside id="sidebarPanel" class="w-full lg:w-1/4 flex flex-col gap-4">
+    <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Management Modules</h3>
+        <nav class="flex flex-col gap-2">
+            
+            <!-- ১. Control Center (শুধুমাত্র Admin দেখতে পাবেন) -->
+            <button onclick="switchTab('dashboardTab')" id="btn-dashboardTab" class="nav-btn admin-only w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold bg-indigo-600 text-white shadow-md">
+                <span><i class="fa-solid fa-chart-line mr-3 text-lg"></i> Control Center</span>
+                <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
+            </button>
+            
+            <!-- ২. Teacher Assignments (শুধুমাত্র Admin দেখতে পাবেন) -->
+            <button onclick="switchTab('teacherTab')" id="btn-teacherTab" class="nav-btn admin-only w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">
+                <span><i class="fa-solid fa-user-tie mr-3 text-lg"></i> Teacher Assignments</span>
+                <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
+            </button>
+            
+            <!-- ৩. Student Registry (শুধুমাত্র Admin দেখতে পাবেন) -->
+            <button onclick="switchTab('studentTab')" id="btn-studentTab" class="nav-btn admin-only w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">
+                <span><i class="fa-solid fa-users mr-3 text-lg"></i> Student Registry</span>
+                <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
+            </button>
+            
+            <!-- ৪. Subject Entry Portal (শুধুমাত্র Admin দেখতে পাবেন) -->
+            <button onclick="switchTab('addSubject')" id="btn-addSubject" class="nav-btn admin-only w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">
+                <span><i class="fa-solid fa-book-bookmark mr-3 text-lg"></i> Subject Entry Portal</span>
+                <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
+            </button>
+            
+            <!-- ৫. Marks Entry Portal (Teacher এবং Admin উভয়েই দেখতে পাবেন) -->
+            <button onclick="switchTab('marksTab')" id="btn-marksTab" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">
+                <span><i class="fa-solid fa-file-signature mr-3 text-lg"></i> Marks Entry Portal</span>
+                <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
+            </button>
+            
+            <!-- ৬. Report Generator (Teacher এবং Admin উভয়েই দেখতে পাবেন) -->
+            <button onclick="switchTab('reportTab')" id="btn-reportTab" class="nav-btn w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">
+                <span><i class="fa-solid fa-graduation-cap mr-3 text-lg"></i> Report Generator</span>
+                <i class="fa-solid fa-chevron-right text-xs opacity-70"></i>
+            </button>
+            
+        </nav>
+    </div>
 
-            <div class="bg-gradient-to-br from-indigo-900 to-indigo-950 p-6 rounded-xl text-white shadow-md border border-indigo-800">
-                <h4 class="text-yellow-400 font-bold mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-question"></i> User Manual
-                </h4>
-                <ol class="text-xs text-slate-300 space-y-2.5 list-decimal pl-4 leading-relaxed">
-                    <li>Go to <strong>Teacher Assignments</strong> and define class course layouts.</li>
-                    <li>Register students class-wise and section-wise using the <strong>Student Registry</strong> tab.</li>
-                    <li>In the <strong>Marks Entry</strong> tab, log theory and practical limits.</li>
-                    <li>Generate individual report cards. All uploaded graphics load automatically!</li>
-                </ol>
-            </div>
-        </aside>
+    <div class="bg-gradient-to-br from-indigo-900 to-indigo-950 p-6 rounded-xl text-white shadow-md border border-indigo-800">
+        <h4 class="text-yellow-400 font-bold mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-circle-question"></i> User Manual
+        </h4>
+        <ol class="text-xs text-slate-300 space-y-2.5 list-decimal pl-4 leading-relaxed">
+            <li>Go to <strong>Teacher Assignments</strong> and define class course layouts.</li>
+            <li>Register students class-wise and section-wise using the <strong>Student Registry</strong> tab.</li>
+            <li>In the <strong>Marks Entry</strong> tab, log theory and practical limits.</li>
+            <li>Generate individual report cards. All uploaded graphics load automatically!</li>
+        </ol>
+    </div>
+</aside>
 
         <!-- CORE MANAGEMENT TABS PANEL -->
         <section class="w-full lg:w-3/4 flex flex-col gap-6">
 
             <!-- DASHBOARD MODULE -->
             <div id="dashboardTab" class="tab-content bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+
+
                 <div class="border-b border-slate-100 bg-slate-50/50 p-6">
                     <h2 class="text-xl font-bold text-indigo-950 flex items-center gap-2">
                         <i class="fa-solid fa-house-laptop text-indigo-600"></i> Control Center Dashboard
@@ -1206,17 +1253,73 @@
                 currentSession = sessionSelect.value;
             }
 
-            populateConfigurationsDropdowns();
-            syncStatistics();
-            populateTeacherAssignmentsTable();
-            populateStudentRegistryTable();
-            loadClassSubjectList();
-            loadStudentMarksEntry();
-            renderGlobalLogoElements();
-            renderSignaturePreviews();
-            renderBannerPreview();
-            populateExamDropdownLink('reportClass', 'reportExamSelect');
-        };
+// 🔑 ১. লগ-ইন ফর্ম সাবমিট হ্যান্ডলার
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const usernameInput = document.getElementById('username')?.value.trim();
+            const passwordInput = document.getElementById('password')?.value.trim();
+
+            if (usernameInput && passwordInput) {
+                if (typeof switchTab === 'function') switchTab('dashboardTab');
+            }
+        });
+    }
+
+    // 👨‍🏫 ২. শিক্ষক অ্যাসাইনমেন্ট ফর্ম হ্যান্ডলার
+    const assignForm = document.getElementById('assignTeacherForm');
+    if (assignForm) {
+        assignForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const teacherName = document.getElementById('teacherName').value.trim();
+            const teacherId = document.getElementById('teacherId').value.trim();
+            const teacherPassword = document.getElementById('teacherPassword') ? document.getElementById('teacherPassword').value.trim() : '';
+            const assignClass = document.getElementById('assignClass').value;
+            const assignSection = document.getElementById('assignSection').value;
+            const assignSubject = document.getElementById('assignSubject').value.trim();
+
+            let existingIndex = teachersDb.findIndex(t => t.id === teacherId && t.className === assignClass && t.sectionName === assignSection && t.subjectSpecialty === assignSubject);
+            
+            if (existingIndex !== -1) {
+                teachersDb[existingIndex] = { id: teacherId, name: teacherName, className: assignClass, sectionName: assignSection, subjectSpecialty: assignSubject, password: teacherPassword };
+            } else {
+                teachersDb.push({ id: teacherId, name: teacherName, className: assignClass, sectionName: assignSection, subjectSpecialty: assignSubject, password: teacherPassword });
+            }
+
+            localStorage.setItem('school_management_teachersDb', JSON.stringify(teachersDb));
+
+            if (typeof firebase !== 'undefined' && firebase.database) {
+                firebase.database().ref('teachers/' + teacherId).set({
+                    name: teacherName,
+                    teacherId: teacherId,
+                    password: teacherPassword,
+                    assignments: teachersDb.filter(t => t.id === teacherId)
+                });
+            }
+
+            alert('শিক্ষক সফলভাবে সেভ ও অ্যাসাইন করা হয়েছে!');
+            assignForm.reset();
+            
+            if (typeof syncStatistics === 'function') syncStatistics();
+            if (typeof populateTeacherAssignmentsTable === 'function') populateTeacherAssignmentsTable();
+        });
+    }
+
+    // ৩. প্রাথমিক ড্রপডাউন ও টেবিল লোডারস
+    if (typeof populateConfigurationsDropdowns === 'function') populateConfigurationsDropdowns();
+    if (typeof syncStatistics === 'function') syncStatistics();
+    if (typeof populateTeacherAssignmentsTable === 'function') populateTeacherAssignmentsTable();
+    if (typeof populateStudentRegistryTable === 'function') populateStudentRegistryTable();
+    if (typeof loadClassSubjectList === 'function') loadClassSubjectList();
+    if (typeof loadStudentMarksEntry === 'function') loadStudentMarksEntry();
+    if (typeof renderGlobalLogoElements === 'function') renderGlobalLogoElements();
+    if (typeof renderSignaturePreviews === 'function') renderSignaturePreviews();
+    if (typeof renderBannerPreview === 'function') renderBannerPreview();
+    if (typeof populateExamDropdownLink === 'function') populateExamDropdownLink('reportClass', 'reportExamSelect');
+};
 
         // UI TAB CONTROLLERS
         function switchTab(tabId) {
@@ -1279,33 +1382,98 @@
             adjustInterfaceSecurity();
         }
 
-        function adjustInterfaceSecurity() {
-            const adminElements = document.querySelectorAll('.admin-only');
-            const sidebar = document.getElementById('sidebarPanel');
+// 🛡️ ২. রোল অনুযায়ী পোর্টাল সিকিউরিটি ও ইন্টারফেস ফিল্টার
+function adjustInterfaceSecurity() {
+    const adminElements = document.querySelectorAll('.admin-only');
+    const sidebar = document.getElementById('sidebarPanel');
 
-            if (currentUserRole === "Admin") {
-                adminElements.forEach(el => el.classList.remove('hidden'));
-                if (sidebar) sidebar.classList.remove('hidden');
-                switchTab('dashboardTab');
-            } else if (currentUserRole === "Teacher") {
-                adminElements.forEach(el => el.classList.add('hidden'));
-                if (sidebar) sidebar.classList.remove('hidden');
-                switchTab('marksTab');
-            } else if (currentUserRole === "Student") {
-                if (sidebar) sidebar.classList.add('hidden');
-                const reportSelectors = document.getElementById('reportSelectors');
-                if (reportSelectors) reportSelectors.classList.add('hidden'); 
-                switchTab('reportTab');
-                
-                const reportStudent = document.getElementById('reportStudent');
-                if (reportStudent) {
-                    reportStudent.innerHTML = `<option value="${loggedInStudentId}">Student Roster</option>`;
-                    reportStudent.value = loggedInStudentId;
-                }
-                compileStudentReportCard();
-            }
+    if (currentUserRole === "Admin") {
+        adminElements.forEach(el => el.classList.remove('hidden'));
+        if (sidebar) sidebar.classList.remove('hidden');
+        switchTab('dashboardTab');
+        
+    } else if (currentUserRole === "Teacher") {
+        // এডমিন সংশ্লিষ্ট সকল ট্যাব ও বাটন হাইড করা
+        adminElements.forEach(el => el.classList.add('hidden'));
+        if (sidebar) sidebar.classList.remove('hidden');
+        
+        // সরাসরি মার্কস এন্ট্রি ট্যাবে নিয়ে যাওয়া
+        switchTab('marksTab');
+        
+        // টিচারের জন্য নির্দিষ্ট ক্লাস ও বিষয় সেটআপ করা
+        setupTeacherPortal(loggedInTeacherName);
+
+    } else if (currentUserRole === "Student") {
+        if (sidebar) sidebar.classList.add('hidden');
+        const reportSelectors = document.getElementById('reportSelectors');
+        if (reportSelectors) reportSelectors.classList.add('hidden'); 
+        switchTab('reportTab');
+        
+        const reportStudent = document.getElementById('reportStudent');
+        if (reportStudent) {
+            reportStudent.innerHTML = `<option value="${loggedInStudentId}">Student Roster</option>`;
+            reportStudent.value = loggedInStudentId;
         }
+        compileStudentReportCard();
+    }
+}
 
+// 🎯 শিক্ষকের জন্য শুধু বরাদ্দকৃত Class, Section ও Subject ফিল্টার করার আপডেট ফাংশন
+function setupTeacherPortal(teacherName) {
+    // ১. লগইন করা শিক্ষকের সমস্ত অ্যাসাইনমেন্ট ফিল্টার করা
+    const teacherAssignments = teachersDb.filter(t => t.name === teacherName);
+    
+    if (!teacherAssignments || teacherAssignments.length === 0) {
+        showToast("Warning", "আপনার নামে কোনো ক্লাস বা বিষয় অ্যাসাইন করা নেই।", "error");
+        return;
+    }
+
+    const marksClass = document.getElementById('marksClass');
+    const marksSection = document.getElementById('marksSection');
+    const marksSubject = document.getElementById('marksSubject');
+
+    if (!marksClass || !marksSection || !marksSubject) return;
+
+    // ২. শিক্ষকের শুধু বরাদ্দকৃত Class সমূহ দিয়ে ড্রপডাউন রিফ্রেশ করা
+    const assignedClasses = [...new Set(teacherAssignments.map(a => a.className))];
+    marksClass.innerHTML = assignedClasses.map(c => `<option value="${c}">${c}</option>`).join('');
+
+    // ৩. সিলেক্ট করা Class অনুযায়ী Section আপডেট করা
+    function updateTeacherSections() {
+        const selectedClass = marksClass.value;
+        const filteredAssignments = teacherAssignments.filter(a => a.className === selectedClass);
+        const assignedSections = [...new Set(filteredAssignments.map(a => a.sectionName))];
+        
+        marksSection.innerHTML = assignedSections.map(s => `<option value="${s}">${s}</option>`).join('');
+        updateTeacherSubjects();
+    }
+
+    // ৪. সিলেক্ট করা Class ও Section অনুযায়ী শুধু শিক্ষকের বরাদ্দকৃত Subject আপডেট করা
+    function updateTeacherSubjects() {
+        const selectedClass = marksClass.value;
+        const selectedSection = marksSection.value;
+        const filteredAssignments = teacherAssignments.filter(a => 
+            a.className === selectedClass && a.sectionName === selectedSection
+        );
+
+        const assignedSubjects = [...new Set(filteredAssignments.map(a => a.subjectSpecialty))];
+        
+        // সব সাবজেক্টের পরিবর্তে শুধু শিক্ষকের সাবজেক্ট লোড করা
+        marksSubject.innerHTML = assignedSubjects.map(sub => `<option value="${sub}">${sub}</option>`).join('');
+
+        // মার্কস টেবিল লোড
+        if (typeof loadStudentMarksEntry === 'function') {
+            loadStudentMarksEntry();
+        }
+    }
+
+    // ড্রপডাউন পরিবর্তনের সাথে সাথে ফিল্টার চালু রাখা
+    marksClass.onchange = updateTeacherSections;
+    marksSection.onchange = updateTeacherSubjects;
+
+    // প্রথমবার প্যানেল লোড করার জন্য কল
+    updateTeacherSections();
+}
 function printReportCard() {
     const toasts = document.querySelectorAll('.toast, [class*="toast"], [class*="notification"]');
     toasts.forEach(t => t.style.display = 'none');
@@ -1407,23 +1575,23 @@ function printReportCard() {
         }
 
         function submitTeacherLogin() {
-            const name = document.getElementById('loginTeacherSelect').value;
-            const enteredPass = document.getElementById('teacherPasswordInput').value;
-            
-            if(!name) {
-                showToast("Identity Error", "No registered teacher selected.", "error");
-                return;
-            }
-            const matches = teachersDb.filter(t => t.name === name);
-            if(matches.length > 0 && matches[0].password === enteredPass) {
-                loggedInTeacherName = name;
-                document.getElementById('teacherLoginGateway').classList.add('hidden');
-                selectUserRole("Teacher");
-                showToast("Login Success", `Logged in as ${name}`, "success");
-            } else {
-                showToast("Incorrect Password", "Faculty authentication failed.", "error");
-            }
-        }
+    const name = document.getElementById('loginTeacherSelect').value;
+    const enteredPass = document.getElementById('teacherPasswordInput').value;
+    
+    if(!name) {
+        showToast("Identity Error", "No registered teacher selected.", "error");
+        return;
+    }
+    const matches = teachersDb.filter(t => t.name === name);
+    if(matches.length > 0 && matches[0].password === enteredPass) {
+        loggedInTeacherName = name;
+        document.getElementById('teacherLoginGateway').classList.add('hidden');
+        selectUserRole("Teacher");
+        showToast("Login Success", `Logged in as ${name}`, "success");
+    } else {
+        showToast("Incorrect Password", "Faculty authentication failed.", "error");
+    }
+}
 
         function openStudentLogin() {
             const classSel = document.getElementById('loginStudentClass');
@@ -1593,41 +1761,161 @@ function printReportCard() {
             });
         }
 
-        function syncStatistics() {
-            document.getElementById('dash_student_count').innerText = studentsDb.length;
-            document.getElementById('dash_teacher_count').innerText = [...new Set(teachersDb.map(t => t.name))].length;
-            document.getElementById('dash_assign_count').innerText = teachersDb.length;
+function syncStatistics() {
+            if (typeof studentsDb === 'undefined' || typeof teachersDb === 'undefined') return;
+            
+            document.getElementById('dash_student_count').innerText = studentsDb.length || 0;
+            document.getElementById('dash_teacher_count').innerText = [...new Set(teachersDb.map(t => t.name))].length || 0;
+            document.getElementById('dash_assign_count').innerText = teachersDb.length || 0;
             
             let marksCount = 0;
-            Object.keys(marksDb).forEach(key => {
-                marksCount += Object.keys(marksDb[key]).length;
-            });
+            if (typeof marksDb !== 'undefined') {
+                Object.keys(marksDb).forEach(key => {
+                    marksCount += Object.keys(marksDb[key]).length;
+                });
+            }
             document.getElementById('dash_marks_count').innerText = marksCount;
         }
 
+        // ১. শিক্ষক অ্যাসাইনমেন্ট টেবিল রেন্ডার করার ফাংশন
         function populateTeacherAssignmentsTable() {
             const tbody = document.getElementById('teacherAssignmentTableBody');
+            if (!tbody) return;
+            
             tbody.innerHTML = '';
             
-            if (teachersDb.length === 0) {
+            if (!teachersDb || teachersDb.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 italic">No assigned courses configured.</td></tr>`;
                 return;
             }
             
-            teachersDb.forEach(t => {
+            teachersDb.forEach((t, index) => {
                 tbody.insertAdjacentHTML('beforeend', `
-                    <tr class="hover:bg-slate-50/80 transition-colors">
-                        <td class="p-4 font-bold text-slate-800">${t.name}</td>
-                        <td class="p-4"><span class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded font-bold text-xs">${t.className}</span></td>
-                        <td class="p-4 font-semibold text-slate-600">${t.sectionName}</td>
-                        <td class="p-4 font-medium text-emerald-700"><i class="fa-solid fa-book-bookmark text-xs mr-1"></i> ${t.subjectSpecialty}</td>
-                        <td class="p-4 font-mono text-xs text-slate-400">${t.password}</td>
-                        <td class="p-4 text-center admin-only">
-                            <button onclick="removeTeacherAssignment('${t.id}')" class="text-rose-500 hover:text-rose-700 p-1" title="Revoke assignment"><i class="fa-solid fa-trash-can"></i></button>
+                    <tr class="hover:bg-slate-50/80 transition-colors border-b">
+                        <td class="p-3 font-semibold text-slate-700">${t.id}</td>
+                        <td class="p-3 font-bold text-slate-800">${t.name}</td>
+                        <td class="p-3"><span class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded font-bold text-xs">${t.className}</span></td>
+                        <td class="p-3 font-semibold text-slate-600">${t.sectionName || '-'}</td>
+                        <td class="p-3 font-medium text-emerald-700"><i class="fa-solid fa-book-bookmark text-xs mr-1"></i> ${t.subjectSpecialty}</td>
+                        <td class="p-3 text-center">
+                            <div class="flex justify-center items-center gap-1.5">
+                                <button onclick="openMarkEntryForTeacher('${t.className}', '${t.sectionName}', '${t.subjectSpecialty}')" 
+                                        class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded text-xs font-medium shadow-sm flex items-center gap-1" title="সরাসরি এই বিষয়ের মার্ক এন্ট্রিতে যান">
+                                    <i class="fa-solid fa-pen-to-square"></i> মার্ক এন্ট্রি
+                                </button>
+                                <button onclick="editTeacherAssignment(${index})" 
+                                        class="bg-amber-500 hover:bg-amber-600 text-white px-2 py-1 rounded text-xs font-medium shadow-sm admin-only" title="Edit">
+                                    <i class="fa-solid fa-pen"></i> Edit
+                                </button>
+                                <button onclick="removeTeacherAssignment(${index})" 
+                                        class="bg-rose-600 hover:bg-rose-700 text-white px-2 py-1 rounded text-xs font-medium shadow-sm admin-only" title="Remove">
+                                    <i class="fa-solid fa-trash"></i> Remove
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `);
             });
+            
+            // ফাংশন বিদ্যমান থাকলে তবেই কল হবে, ফলে লগ-ইন ব্লক হবে না
+            if (typeof adjustInterfaceSecurity === 'function') {
+                adjustInterfaceSecurity();
+            }
+        }
+
+        // ২. সরাসরি নির্দিষ্ট সাবজেক্টের মার্ক এন্ট্রি পোর্টালে নিয়ে যাওয়ার ফাংশন
+        function openMarkEntryForTeacher(className, sectionName, subjectName) {
+            if (typeof switchTab === 'function') switchTab('marksTab');
+            
+            const marksClass = document.getElementById('marksClass');
+            const marksSection = document.getElementById('marksSection');
+            const marksSubject = document.getElementById('marksSubject');
+            
+            if (marksClass) marksClass.value = className;
+            if (marksSection) marksSection.value = sectionName;
+            if (marksSubject) marksSubject.value = subjectName;
+            
+            if (typeof loadStudentMarksEntry === 'function') {
+                loadStudentMarksEntry();
+            }
+        }
+
+        // ৩. শিক্ষক অ্যাসাইনমেন্ট এডিট করার ফাংশন
+        function editTeacherAssignment(index) {
+            const item = teachersDb[index];
+            if (!item) return;
+
+            document.getElementById('teacherName').value = item.name;
+            document.getElementById('teacherId').value = item.id;
+            if (document.getElementById('teacherPassword')) document.getElementById('teacherPassword').value = item.password || '';
+            document.getElementById('assignClass').value = item.className;
+            document.getElementById('assignSection').value = item.sectionName;
+            document.getElementById('assignSubject').value = item.subjectSpecialty;
+
+            teachersDb.splice(index, 1);
+            
+            const assignForm = document.getElementById('assignTeacherForm');
+            if (assignForm) assignForm.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ৪. শিক্ষক অ্যাসাইনমেন্ট রিমুভ করার ফাংশন
+        function removeTeacherAssignment(index) {
+            if (!confirm("আপনি কি নিশ্চিত যে এই শিক্ষক অ্যাসাইনমেন্টটি মুছে ফেলতে চান?")) return;
+
+            const targetTeacher = teachersDb[index];
+            teachersDb.splice(index, 1);
+            localStorage.setItem('school_management_teachersDb', JSON.stringify(teachersDb));
+
+            if (typeof firebase !== 'undefined' && firebase.database && targetTeacher) {
+                firebase.database().ref('teachers/' + targetTeacher.id).remove();
+            }
+
+            syncStatistics();
+            populateTeacherAssignmentsTable();
+            alert("অ্যাসাইনমেন্টটি সফলতা সহকারে রিমুভ করা হয়েছে!");
+        }
+
+        // ৫. নতুন শিক্ষকের অ্যাসাইনমেন্ট যোগ করার ফাংশন
+        function addTeacherAssignment(event) {
+            if (event) event.preventDefault();
+            // আপনার ফর্ম সাবমিটের বাকি লজিক এখানে থাকবে...
+
+            const name = document.getElementById('teacherName')?.value.trim();
+            const className = document.getElementById('teacherClass')?.value.trim();
+            const sectionName = document.getElementById('teacherSection')?.value.trim();
+            const subjectSpecialty = document.getElementById('teacherSubject')?.value.trim();
+            const password = document.getElementById('teacherPassword')?.value.trim() || '123456';
+
+            if (!name || !className || !subjectSpecialty) {
+                alert('অনুগ্রহ করে শিক্ষক, শ্রেণি এবং বিষয় সঠিকভাবে পূরণ করুন।');
+                return;
+            }
+
+            const newAssignment = {
+                id: 't_' + Date.now(),
+                name: name,
+                className: className,
+                sectionName: sectionName,
+                subjectSpecialty: subjectSpecialty,
+                password: password
+            };
+
+            teachersDb.push(newAssignment);
+            saveTeachersDb();
+            populateTeacherAssignmentsTable();
+            if (typeof syncStatistics === 'function') syncStatistics();
+
+            const form = document.getElementById('addTeacherAssignmentForm');
+            if (form) form.reset();
+        }
+
+        // ৪. LocalStorage-এ teachersDb সংরক্ষণ করার ফাংশন
+        function saveTeachersDb() {
+            try {
+                localStorage.setItem('teachersDb', JSON.stringify(teachersDb));
+            } catch (error) {
+                console.error('শিক্ষকের তথ্য সংরক্ষণ করতে সমস্যা হয়েছে:', error);
+            }
         }
 
         function populateStudentRegistryTable() {
@@ -3164,6 +3452,166 @@ grandTotalMaxPossible += totalMaxPossible;
                 });
             }
         });
+
+// পেজ পুরোপুরি লোড হওয়ার পর কোড রান করবে
+document.addEventListener('DOMContentLoaded', function() {
+
+    const form = document.getElementById('assignTeacherForm');
+    const statusMsg = document.getElementById('statusMessage');
+    const tableBody = document.getElementById('assignedTeachersTableBody');
+
+    // ১. ফর্ম সাবমিট ইভেন্ট
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // ইনপুট ভ্যালুসমূহ সংগ্রহ
+            const name = document.getElementById('teacherName').value.trim();
+            const id = document.getElementById('teacherId').value.trim();
+            const password = document.getElementById('teacherPassword').value.trim();
+            const className = document.getElementById('assignClass').value;
+            const section = document.getElementById('assignSection').value;
+            const subject = document.getElementById('assignSubject').value.trim();
+
+            const newAssignment = {
+                class: className,
+                section: section,
+                subject: subject
+            };
+
+            // স্ক্রিনে নোটিফিকেশন দেখানোর ফাংশন
+            function showStatus(text, isError = false) {
+                statusMsg.innerText = text;
+                statusMsg.className = isError 
+                    ? 'mb-4 p-3 rounded text-sm font-medium bg-red-100 text-red-700 block'
+                    : 'mb-4 p-3 rounded text-sm font-medium bg-green-100 text-green-700 block';
+            }
+
+            try {
+                // ফায়ারবেসে সেভ করার চেষ্টা
+                if (typeof firebase !== 'undefined' && firebase.database) {
+                    const teacherRef = firebase.database().ref('teachers/' + id);
+                    
+                    teacherRef.once('value').then(function(snapshot) {
+                        let teacherData;
+                        if (snapshot.exists()) {
+                            teacherData = snapshot.val();
+                            teacherData.assignments = teacherData.assignments || [];
+                            teacherData.assignments.push(newAssignment);
+                        } else {
+                            teacherData = {
+                                name: name,
+                                teacherId: id,
+                                password: password,
+                                role: "teacher",
+                                assignments: [newAssignment]
+                            };
+                        }
+
+                        return teacherRef.set(teacherData);
+                    }).then(() => {
+                        showStatus("✅ সফলতা: শিক্ষক সফলভাবে অ্যাসাইন ও সেভ হয়েছেন!");
+                        alert("শিক্ষক সফলভাবে সেভ হয়েছে!");
+                        form.reset();
+                        loadTeacherList(); // টেবিল রিফ্রেশ
+                    }).catch(err => {
+                        showStatus("❌ ফায়ারবেস এরর: " + err.message, true);
+                    });
+
+                } else {
+                    // ফায়ারবেস কানেক্টেড না থাকলে ব্যাকআপ (LocalStorage) এ সেভ হবে
+                    let localTeachers = JSON.parse(localStorage.getItem('teachers_data') || '{}');
+                    if (!localTeachers[id]) {
+                        localTeachers[id] = { name: name, teacherId: id, password: password, role: "teacher", assignments: [] };
+                    }
+                    localTeachers[id].assignments.push(newAssignment);
+                    localStorage.setItem('teachers_data', JSON.stringify(localTeachers));
+
+                    showStatus("✅ সেভ হয়েছে (Local Storage-এ সংরক্ষন করা হলো)!");
+                    alert("শিক্ষক সফলভাবে সেভ হয়েছে!");
+                    form.reset();
+                    loadTeacherList();
+                }
+
+            } catch (error) {
+                showStatus("❌ কোনো সমস্যা হয়েছে: " + error.message, true);
+            }
+        });
+    }
+
+    // ২. সেভ হওয়া শিক্ষকদের তালিকা টেবিলে প্রদর্শন করার ফাংশন
+    function loadTeacherList() {
+        if (!tableBody) return;
+        tableBody.innerHTML = "";
+
+        if (typeof firebase !== 'undefined' && firebase.database) {
+            firebase.database().ref('teachers').once('value', function(snapshot) {
+                const data = snapshot.val();
+                renderTable(data);
+            });
+        } else {
+            const localData = JSON.parse(localStorage.getItem('teachers_data') || '{}');
+            renderTable(localData);
+        }
+    }
+
+    function renderTable(teachersData) {
+        if (!teachersData) {
+            tableBody.innerHTML = '<tr><td colspan="5" class="p-3 text-center text-gray-500">কোনো শিক্ষক অ্যাসাইন করা হয়নি।</td></tr>';
+            return;
+        }
+
+        let html = '';
+        Object.keys(teachersData).forEach(id => {
+            const t = teachersData[id];
+            if (t.assignments && t.assignments.length > 0) {
+                t.assignments.forEach(assign => {
+                    html += `
+                        <tr class="border-b">
+                            <td class="p-2 border">${t.teacherId}</td>
+                            <td class="p-2 border">${t.name}</td>
+                            <td class="p-2 border">${assign.class}</td>
+                            <td class="p-2 border">${assign.section}</td>
+                            <td class="p-2 border">${assign.subject}</td>
+                        </tr>
+                    `;
+                });
+            }
+        });
+        tableBody.innerHTML = html || '<tr><td colspan="5" class="p-3 text-center text-gray-500">কোনো ডাটা পাওয়া যায়নি।</td></tr>';
+    }
+
+    // পেজ খুললেই আগের শিক্ষক তালিকা দেখাবে
+    loadTeacherList();
+});
+
+// শিক্ষক লগইন করার পর তার প্রাপ্ত ক্লাস, সেকশন ও বিষয় ড্রপডাউনে লোড করা
+function loadTeacherPortal(loggedInTeacherId) {
+    
+    // ডাটাবেস থেকে ওই শিক্ষকের তথ্য আনা
+    firebase.database().ref('teachers/' + loggedInTeacherId).once('value', function(snapshot) {
+        if (snapshot.exists()) {
+            const teacher = snapshot.val();
+            const assignments = teacher.assignments || [];
+
+            const classSelect = document.getElementById('marksClassSelect');
+            const sectionSelect = document.getElementById('marksSectionSelect');
+            const subjectSelect = document.getElementById('marksSubjectSelect');
+
+            // অপশনগুলো খালি করে শুধু নির্দিষ্টগুলো দেওয়া
+            classSelect.innerHTML = '<option value="">Select Class</option>';
+            sectionSelect.innerHTML = '<option value="">Select Section</option>';
+            subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+
+            assignments.forEach(item => {
+                classSelect.innerHTML += `<option value="${item.class}">${item.class}</option>`;
+                sectionSelect.innerHTML += `<option value="${item.section}">${item.section}</option>`;
+                subjectSelect.innerHTML += `<option value="${item.subject}">${item.subject}</option>`;
+            });
+        }
+    });
+}
+
     </script>
 </body>
 </html>
