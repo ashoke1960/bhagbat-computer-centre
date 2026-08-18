@@ -2394,12 +2394,13 @@ if (cleanName && !isNaN(percentNum)) {
     if (cleanName.includes("ENVIRONMENTAL") || cleanName.includes("EVS")) shortLabel = "EVS";
     else if (cleanName.includes("MATHEMATICS") || cleanName.includes("MATH")) shortLabel = "MATH";
     else if (cleanName.includes("INFORMATION") || cleanName.includes("IT")) shortLabel = "I.T.";
-    else if (cleanName.includes("SOCIAL") || cleanName.includes("SSC") || cleanName.includes("SST")) shortLabel = "S.ST";
+    else if (cleanName.includes("SOCIAL") || cleanName.includes("SSC") || cleanName.includes("SST")) shortLabel = "SST";
     else if (cleanName.includes("BENGALI")) shortLabel = "BEN";
     else if (cleanName.includes("ENGLISH")) shortLabel = "ENG";
     else if (cleanName.includes("HINDI")) shortLabel = "HINDI";
     else if (cleanName.includes("SCIENCE")) shortLabel = "SCI";
     else if (cleanName.includes("COMPUTER")) shortLabel = "COMP";
+	else if (cleanName.includes("INFORMATION TECHNOLOGY")) shortLabel = "IT";
 
     subjectLabels.push(shortLabel);
     percentageData.push(percentNum);
