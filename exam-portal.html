@@ -2684,7 +2684,8 @@ subs.forEach(sub => {
                             groupRowsHtml += `<div class="flex justify-between border-b border-slate-200/50 last:border-none px-1"><span>${sLabel} (20)</span> <span class="font-bold">${parseScore(data.th)}</span></div>`;
                         });
 
-                        currentThFM = groupSubs.length * 20; // Class VI-VIII এর জন্য ৩*২০ = ৬০, Class IX এর জন্য ৪*২০ = ৮০
+                        // Class 9-10 (4 parts) হলে 80, Class 6-8 (3 parts) হলে 60, অন্যথায় ২০
+currentThFM = isHighSchool ? 80 : (isMiddleSchool ? 60 : 20);
                         currentPrFM = 0;
 
                         // গড় মান নির্ণয় ( Average Sub Enrich & Copy Sub )
@@ -2756,10 +2757,11 @@ subs.forEach(sub => {
                 let ptWeightage = 0;
                 
               if (subjectType === "SCI") {
-    // Class IX-X হলে ৬ দিয়ে ভাগ, কিন্তু Class I-VIII (একক বিষয়) হলে ২ দিয়ে ভাগ হবে (২০/২ = ১০)
-    ptWeightage = isGroup ? (finalTh / 6) : ((finalTh + finalPr) / 2); 
+    // মোট নম্বরকে ১০-এ কনভার্ট করার জন্য
+    ptWeightage = isGroup ? (finalTh / 6) : (finalTh / 4); 
 } else if (subjectType === "SSC") {
     ptWeightage = isHighSchool ? (finalTh / 8) : (finalTh / 6); 
+} 
 } else if (subjectType === "IT") {
     ptWeightage = (finalTh + finalPr) / 4; 
 } else {
@@ -2775,8 +2777,8 @@ subs.forEach(sub => {
                 let internalColumnHtml = '';
 
 if (isBigExam) {
-    // ১. ইন্টারনাল এ্যাসেসমেন্ট (PT-1 + Sub Enrich + Copy Sub = Max 20)
-    const internalTotal20 = Math.min(20, ptWeightage + finalSubEnrich + finalCopySub);
+    // PT Weightage (১০) + Sub Enrich (৫) + Copy Sub (৫) = মোট ২০
+    const internalTotal20 = Math.min(20, (ptWeightage || 0) + finalSubEnrich + finalCopySub);
     
     // ২. মোট প্রাপ্ত নম্বর (ইন্টারনাল ২০ + লিখিত/প্র্যাকটিক্যাল)
     total = internalTotal20 + finalTh + finalPr;
