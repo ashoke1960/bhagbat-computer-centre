@@ -2776,6 +2776,10 @@ currentThFM = isHighSchool ? 80 : (isMiddleSchool ? 60 : 20);
                 let internalColumnHtml = '';
 
 if (isBigExam) {
+    // SSC-এর ৩টি বিষয় মিলিয়ে মোট ১২০ হলে তাকে ৮০-এর স্কেলে আনার নিরাপদ লজিক
+    if (subjectType === "SSC" && isGroup) {
+        finalTh = (finalTh / 120) * 80;
+    }
     // PT Weightage (১০) + Sub Enrich (৫) + Copy Sub (৫) = মোট ২০
     const internalTotal20 = Math.min(20, (ptWeightage || 0) + finalSubEnrich + finalCopySub);
     
