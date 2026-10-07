@@ -511,6 +511,14 @@
                         <option value="2025-2026">2025-2026</option>
                         <option value="2026-2027" selected>2026-2027</option>
                         <option value="2027-2028">2027-2028</option>
+			<option value="2028-2029">2028-2029</option>
+			<option value="2029-2030">2029-2030</option>
+			<option value="2030-2031">2030-2031</option>
+			<option value="2031-2032">2031-2032</option>
+			<option value="2032-2033">2032-2033</option>
+			<option value="2033-2034">2033-2034</option>
+			<option value="2034-2035">2034-2035</option>
+                    </select>
                     </select>
                 </div>
 
@@ -858,6 +866,7 @@
                             <option value="2025-2026">2025-2026</option>
                             <option value="2026-2027" selected>2026-2027</option>
                             <option value="2027-2028">2027-2028</option>
+			    <option value="2028-2029">2028-2029</option>
                         </select>
                     </div>
                     <div>
@@ -888,11 +897,17 @@
                         <label class="block text-xs font-bold uppercase text-rose-600 mb-1">Written FM</label>
                         <select id="gFM_Written" onchange="applyGlobalMaxLimits()" class="w-full bg-white border border-rose-300 rounded-lg px-2.5 py-2 text-xs font-bold text-rose-700 focus:ring-2 focus:ring-rose-500">
                             <option value="10">10</option>
+			    <option value="15">15</option>
                             <option value="20">20</option>
+			    <option value="25">25</option>
                             <option value="30">30</option>
+ 			    <option value="35">35</option>
                             <option value="40" selected>40</option>
                             <option value="50">50</option>
+			    <option value="55">55</option>
                             <option value="60">60</option>
+			    <option value="70">70</option>
+			    <option value="75">75</option>
                             <option value="80">80</option>
                             <option value="100">100</option>
                         </select>
@@ -902,10 +917,16 @@
                         <select id="gFM_Practical" onchange="applyGlobalMaxLimits()" class="w-full bg-white border border-emerald-300 rounded-lg px-2.5 py-2 text-xs font-bold text-emerald-700 focus:ring-2 focus:ring-emerald-500">
                             <option value="0" selected>0 (None)</option>
                             <option value="10">10</option>
+			    <option value="15">15</option>
                             <option value="20">20</option>
+			    <option value="25">25</option>
                             <option value="30">30</option>
+			    <option value="35">35</option>
                             <option value="40">40</option>
-                            <option value="50">50</option>
+			    <option value="45">45</option>
+			    <option value="50">50</option>
+                            <option value="60">60</option>
+			    
                         </select>
                     </div>
                 </div>
@@ -1210,7 +1231,7 @@
             "Class-VII": [{name:"ENGLISH(1st Lang)", thFM:40, prFM:0}, {name:"BENGALI(2nd Lang)", thFM:40, prFM:0}, {name:"HINDI(3rd Lang)", thFM:40, prFM:0}, {name:"MATHEMATICS", thFM:40, prFM:0}, {name:"SCIENCE", thFM:40, prFM:0}, {name:"SSC:History", thFM:20, prFM:0}, {name:"SSC:Geography", thFM:20, prFM:0}, {name:"SSC:Civics", thFM:20, prFM:0}, {name:"COMPUTER", thFM:20, prFM:20}],
             "Class-VIII": [{name:"ENGLISH(1st Lang)", thFM:40, prFM:0}, {name:"BENGALI(2nd Lang)", thFM:40, prFM:0}, {name:"HINDI(3rd Lang)", thFM:40, prFM:0}, {name:"MATHEMATICS", thFM:40, prFM:0}, {name:"SCIENCE", thFM:40, prFM:0}, {name:"SSC:History", thFM:20, prFM:0}, {name:"SSC:Geography", thFM:20, prFM:0}, {name:"SSC:Civics", thFM:20, prFM:0}, {name:"COMPUTER", thFM:20, prFM:20}],
             "Class-IX": [{name:"ENGLISH(184)", thFM:40, prFM:0}, {name:"BENGALI(005)", thFM:40, prFM:0}, {name:"HINDI(085)", thFM:40, prFM:0}, {name:"MATHEMATICS(041)", thFM:40, prFM:0}, {name:"SCI(086):Physics", thFM:20, prFM:0}, {name:"SCI(086):Chemistry", thFM:20, prFM:0}, {name:"SCI(086):Biology", thFM:20, prFM:0}, {name:"SSC(087):History", thFM:20, prFM:0}, {name:"SSC(087):Geography", thFM:20, prFM:0}, {name:"SSC(087):Pol. Sc.", thFM:20, prFM:0}, {name:"SSC(087):Economics", thFM:20, prFM:0}, {name:"INFORMATION TECHNOLOGY(402)", thFM:20, prFM:20}],
-            "Class-X": [{name:"ENGLISH(184)", thFM:40, prFM:0}, {name:"BENGALI(005)", thFM:40, prFM:0}, {name:"HINDI(085)", thFM:40, prFM:0}, {name:"MATHEMATICS(041)", thFM:40, prFM:0}, {name:"SCI(086):Physics", thFM:20, prFM:0}, {name:"SCI(086):Chemistry", thFM:20, prFM:0}, {name:"SCI(086):Biology", thFM:20, prFM:0}, {name:"SSC(087):History", thFM:20, prFM:0}, {name:"SSC(087):Geography", thFM:20, prFM:0}, {name:"SSC(087):Pol. Sc.", thFM:20, prFM:0}, {name:"SST(087):Economics", thFM:20, prFM:0}, {name:"INFORMATION TECHNOLOGY(402)", thFM:20, prFM:20}],
+            "Class-X": [{name:"ENGLISH(184)", thFM:40, prFM:0}, {name:"BENGALI(005)", thFM:40, prFM:0}, {name:"HINDI(085)", thFM:40, prFM:0}, {name:"MATHEMATICS(041)", thFM:40, prFM:0}, {name:"SCI(086):Physics", thFM:20, prFM:0}, {name:"SCI(086):Chemistry", thFM:20, prFM:0}, {name:"SCI(086):Biology", thFM:20, prFM:0}, {name:"SSC(087):History", thFM:20, prFM:0}, {name:"SSC(087):Geography", thFM:20, prFM:0}, {name:"SSC(087):Pol. Sc.", thFM:20, prFM:0}, {name:"SSC(087):Economics", thFM:20, prFM:0}, {name:"INFORMATION TECHNOLOGY(402)", thFM:20, prFM:20}],
             "Class-XI": [{name:"ENGLISH Core", thFM:40, prFM:0}, {name:"PHYSICS", thFM:40, prFM:0}, {name:"CHEMISTRY", thFM:40, prFM:0}, {name:"MATHEMATICS", thFM:40, prFM:0}, {name:"BIOLOGY", thFM:40, prFM:0}, {name:"PHYSICAL EDUCATION(048)", thFM:40, prFM:0}, {name:"INFORMATION TECHNOLOGY(802)", thFM:20, prFM:20}],
 	    "Class-XII": [{name:"ENGLISH Core", thFM:40, prFM:0}, {name:"PHYSICS", thFM:40, prFM:0}, {name:"CHEMISTRY", thFM:40, prFM:0}, {name:"MATHEMATICS", thFM:40, prFM:0}, {name:"BIOLOGY", thFM:40, prFM:0}, {name:"PHYSICAL EDUCATION(048)", thFM:40, prFM:0}, {name:"INFORMATION TECHNOLOGY(802)", thFM:20, prFM:20}]
         };
@@ -2776,15 +2797,52 @@ currentThFM = isHighSchool ? 80 : (isMiddleSchool ? 60 : 20);
                 let internalColumnHtml = '';
 
 if (isBigExam) {
-    // SSC-এর ৩টি বিষয় মিলিয়ে মোট ১২০ হলে তাকে ৮০-এর স্কেলে আনার নিরাপদ লজিক
-    if (subjectType === "SSC" && isGroup) {
-        finalTh = (finalTh / 120) * 80;
-    }
+    // PT-1 Weightage Calculation (১০-এ কনভার্ট)
+if (subjectType === "SCI") {
+    ptWeightage = isGroup ? (finalTh / 6) : (finalTh / 4); // ৬০ কে ১০ (Group) অথবা ৪০ কে ১০ (Single)
+} else if (subjectType === "SSC") {
+    ptWeightage = isHighSchool ? (finalTh / 8) : (isMiddleSchool ? (finalTh / 6) : (finalTh / 2)); 
+} else if (subjectType === "IT") {
+    ptWeightage = (finalTh + finalPr) / 4; 
+} else {
+    // Class 1 to 8 এর যেকোনো একক বিষয়ের থিওরি ৪০ থাকলে তাকে ১০-এ কনভার্ট
+    const thFM = currentThFM > 0 ? currentThFM : 40;
+    ptWeightage = (finalTh / thFM) * 10; 
+}
     // PT Weightage (১০) + Sub Enrich (৫) + Copy Sub (৫) = মোট ২০
     const internalTotal20 = Math.min(20, (ptWeightage || 0) + finalSubEnrich + finalCopySub);
-    
+
+
+
+
+
+
+    // ==========================================
+    // হাফ-ইয়ার্লি লিখিত পরীক্ষার মার্কস (80 Scale)-এ রূপান্তর
+    // ==========================================
+    if (subjectType === "SCI" && isGroup) {
+        // ৩টি বিষয়ের গড় × ২ (যেমন: 120 / 3 = 40 -> 40 * 2 = 80)
+        finalTh = (finalTh / 3) * 2;
+    } else if (subjectType === "SSC" && isGroup) {
+        // High School (Class 9-10)-এ ৪টি বিষয়ের গড় × ২, Middle School (Class 6-8)-এ ৩টি বিষয়ের গড় × ২
+        const subCount = isHighSchool ? 4 : 3;
+        finalTh = (finalTh / subCount) * 2;
+    }
+
+    // দশমিকের পর মান ঠিক রাখার জন্য
+    finalTh = Math.round(finalTh * 10) / 10;
+
     // ২. মোট প্রাপ্ত নম্বর (ইন্টারনাল ২০ + লিখিত/প্র্যাকটিক্যাল)
     total = internalTotal20 + finalTh + finalPr;
+
+  
+
+
+
+
+
+
+
     
     // ৩. হাফ ইয়ার্লি বা এনুয়ালে মোট ফুল মার্কস সবসময় ১০০ হবে
     totalMaxPossible = 100;
@@ -2875,7 +2933,7 @@ grandTotalMaxPossible += totalMaxPossible;
                 <tr>
                     <th class="p-2 border-r border-slate-300">Subjects</th>
                     <th class="p-2 border-r border-slate-200 text-center text-amber-800">PT-1 (20)</th>
-                    <th class="p-2 border-r border-slate-100 text-center">Written Marks</th>
+                    <th class="p-2 border-r border-slate-100 text-center">Written Marks </th>
                     <th class="p-2 border-r border-slate-100 text-center">Practical Marks</th>
                     <th class="p-2 border-r border-slate-200 text-center">Total</th>
                     <th class="p-2 border-r border-slate-200 text-center">%</th>
